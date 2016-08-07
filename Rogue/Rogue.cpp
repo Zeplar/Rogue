@@ -25,7 +25,7 @@ int main()
 	bool redraw = false;	//Indicates that it's time to draw everything
 
 	//Initialize a bunch of Allegro stuff like the display, keyboard, and FPS timer
-	//========================================================================================================
+	//=========================================================================================================
 	if (!al_init())
 	{
 		fprintf(stderr, "failed to initialize allegro\n");
