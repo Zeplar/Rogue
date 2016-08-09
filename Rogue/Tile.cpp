@@ -1,50 +1,46 @@
 #include "stdafx.h"
 #include "Tile.h"
-#include <allegro5\allegro_image.h>
-#include <iostream>
-#include <exception>
+#include <string>
 
+int Tile::numTiles = 0;
+std::vector<ALLEGRO_BITMAP*> Tile::AllTiles(32);
 
-
-Tile::Tile(ALLEGRO_BITMAP *image, bool canBeWalked) : walkable( canBeWalked ), image (image)
+Tile::Tile()
 {
 }
-
-
 Tile::~Tile()
 {
-	al_destroy_bitmap((ALLEGRO_BITMAP *)image);
-}
 
+}
 void Tile::Draw(int x, int y)
 {
-	al_draw_bitmap((ALLEGRO_BITMAP *)image, x, y, 0);
+	if (AllTiles[TileID] == NULL)
+	{
+		fprintf(stderr, "Error: Null tile bitmap.\n");
+		return;
+	}
+	al_draw_bitmap(Tile::AllTiles[TileID], x, y, 0);
 }
 
-Tile *Tile::Forest()
+int Tile::RegisterImage(const char TileName[])
 {
-	ALLEGRO_BITMAP *image = al_create_bitmap(TILE_W, TILE_H);
-	al_set_target_bitmap(image);
+	std::string filename = "C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/tiles/";
+	filename.append(TileName);
 
-	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/tiles/forest_floor.bmp");
-	al_draw_scaled_bitmap(raw, 0, 0, al_get_bitmap_width(raw), al_get_bitmap_height(raw), 0, 0, TILE_W, TILE_H, 0);
-	al_destroy_bitmap(raw);
-
-	raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/tiles/forest.bmp");
-	al_convert_mask_to_alpha(raw, al_color_name("white"));
-	al_draw_scaled_bitmap(raw, 0, 0, al_get_bitmap_width(raw), al_get_bitmap_height(raw), 0, 0, TILE_W, TILE_H, 0);
-
-	al_destroy_bitmap(raw);
-	return new Tile(image);
-}
-
-Tile *Tile::Forest_Floor()
-{
-	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/tiles/forest_floor.bmp");
-
+	ALLEGRO_BITMAP *raw = al_load_bitmap(filename.c_str());
+	if (raw == NULL) fprintf(stderr, "Error: Bitmap failed to load\n");
 	ALLEGRO_BITMAP *image = al_create_bitmap(TILE_W, TILE_H);
 	al_set_target_bitmap(image);
 	al_draw_scaled_bitmap(raw, 0, 0, al_get_bitmap_width(raw), al_get_bitmap_height(raw), 0, 0, TILE_W, TILE_H, 0);
 	al_destroy_bitmap(raw);
-	return new Tile(image, false);
+
+	//Register the image
+	Tile::AllTiles[numTiles] = image;
+	return Tile::numTiles++;
+}
+
+int Tile::RegisterImage(ALLEGRO_BITMAP * image)
+{
+	Tile::AllTiles[numTiles] = image;
+	return Tile::numTiles++;
 }

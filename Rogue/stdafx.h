@@ -9,6 +9,10 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_color.h>
+#include <allegro5\allegro_image.h>
 
 
 

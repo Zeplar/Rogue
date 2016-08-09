@@ -1,13 +1,16 @@
 #pragma once
-#include <allegro5\bitmap.h>
-#include <allegro5\allegro_primitives.h>
+#include "stdafx.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <vector>
+#include "Tile.h"
 class Player
 {
 public:
 	Player();
 	~Player();
 	int x, y;
-	float dx, dy;
+	float speed;
 	ALLEGRO_BITMAP *image;
 
 	float direction; //direction in radians
@@ -16,6 +19,12 @@ public:
 
 	void Draw();
 	void Move(bool *key);
+
+	static Player* primaryPlayer;
+
+private:
+	static std::vector<Player*> players;
+	float moveTimer = 0;
 
 };
 

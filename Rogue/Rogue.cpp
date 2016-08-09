@@ -3,29 +3,21 @@
 
 
 #include "stdafx.h"
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_color.h>
 #include <time.h>
 #include "Player.h"
-#include "Tile.h"
-#include "Chunk.h"
+#include "World.h"
 #include <random>
 
 
 
 int main()
 {
-
 	const int SCREEN_W = 2 * Chunk::size * Tile::TILE_W;
 	const int SCREEN_H = 2 * Chunk::size * Tile::TILE_H;
 	const float FPS = 60;
 	ALLEGRO_TIMER *timer = NULL;
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-	Player *player = NULL;
-	Chunk chunk;
-
 
 	bool key[ALLEGRO_KEY_MAX]; //Array indicating which keys were pressed last time we checked
 	for (int i = 0; i < ALLEGRO_KEY_MAX; i++) key[i] = false;
@@ -50,12 +42,6 @@ int main()
 	al_set_new_display_option(ALLEGRO_SAMPLES, 4, ALLEGRO_SUGGEST);
 
 
-	for (int i = 0; i < chunk.size; i++)
-		for (int j = 0; j < chunk.size; j++)
-		{
-			chunk.data[i][j] = (std::rand() % 2) ? Tile::Forest() : Tile::Forest_Floor();
-		}
-
 	//initialize display (w, h)
 	display = al_create_display(SCREEN_W, SCREEN_H);
 	if (!display) {
@@ -76,19 +62,14 @@ int main()
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-	al_clear_to_color(al_map_rgb(0, 0, 0));
-
-	al_flip_display();
-
 	al_start_timer(timer);
 
 	//=================================================================================================================
 
-	player = new Player();
 	
-
-	al_set_target_bitmap(al_get_backbuffer(display));
-
+	World::SetDisplay(al_get_backbuffer(display));
+	Player::primaryPlayer = new Player();
+	World::Initialize();
 	//=================================================================================================================
 
 	//Main loop
@@ -103,7 +84,7 @@ int main()
 			//Do anything that's framelocked
 
 			//Player logic
-			player->Move(key);
+			Player::primaryPlayer->Move(key);
 
 			//Prep the screen for drawing
 			redraw = true;
@@ -127,9 +108,10 @@ int main()
 		if (redraw && al_is_event_queue_empty(event_queue))
 		{
 			redraw = false;
+			al_set_target_bitmap(al_get_backbuffer(display));
 			al_clear_to_color(al_map_rgb(0, 0, 0));
-			chunk.Draw();
-			player->Draw();
+			World::Draw();
+			Player::primaryPlayer->Draw();
 			al_flip_display();
 		}
 	}

@@ -14,9 +14,10 @@ Chunk::~Chunk()
 	}
 }
 
-void Chunk::Draw()
+void Chunk::Draw(int x, int y)
 {
+	
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++)
-			data[i][j]->Draw(i*Tile::TILE_W, j*Tile::TILE_H);
+			data[i][j]->Draw(i*Tile::TILE_W + x, j*Tile::TILE_H + y);
 }
