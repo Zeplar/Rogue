@@ -36,8 +36,9 @@ Tile* World::getTile(int x, int y)
 
 void World::GetChunksAroundPlayer(Player *p)
 {
-	for (int i = -1; i <= 1; i++)
-		for (int j = -1; j <= 1; j++)
+	const int ChunkRange = 1;
+	for (int i = -ChunkRange; i <= ChunkRange; i++)
+		for (int j = -ChunkRange; j <= ChunkRange; j++)
 			if (World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] == NULL)
 			{
 				World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] = generateChunk();
@@ -48,12 +49,15 @@ void World::Draw()
 {
 	GetChunksAroundPlayer(Player::primaryPlayer);
 
+	//al_use_transform()
+
 	al_set_target_bitmap(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
 	for (int i=0; i < 4; i++)
 		for (int j = 0; j < 4; j ++)
 		{
+			if (i < 0 || j < 0 || i > 127 || j > 127) continue;
 			if (chunks[i][j] != NULL)
 			{
 				chunks[i][j]->Draw(i*Tile::TILE_W*Chunk::size, j*Tile::TILE_H*Chunk::size);

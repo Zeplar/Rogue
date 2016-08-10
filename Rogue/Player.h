@@ -19,12 +19,15 @@ public:
 
 	void Draw();
 	void Move(bool *key);
+	const ALLEGRO_TRANSFORM *Get_Transform();
+
 
 	static Player* primaryPlayer;
 
 private:
 	static std::vector<Player*> players;
 	float moveTimer = 0;
-
+	ALLEGRO_TRANSFORM camera_transform;
+	void Transform_Camera();
 };
 

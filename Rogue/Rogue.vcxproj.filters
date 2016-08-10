@@ -48,6 +48,9 @@
     <ClInclude Include="Forest_Tree.h">
       <Filter>Header Files\Tiles</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -79,8 +82,16 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="tiles\forest.bmp">
+    <Image Include="tiles\Forest_Floor.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="tiles\Forest_Tree.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Rogue.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

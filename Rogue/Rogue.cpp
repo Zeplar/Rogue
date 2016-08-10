@@ -110,6 +110,7 @@ int main()
 			redraw = false;
 			al_set_target_bitmap(al_get_backbuffer(display));
 			al_clear_to_color(al_map_rgb(0, 0, 0));
+			al_use_transform(Player::primaryPlayer->Get_Transform());
 			World::Draw();
 			Player::primaryPlayer->Draw();
 			al_flip_display();

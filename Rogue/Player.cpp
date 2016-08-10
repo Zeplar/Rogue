@@ -20,6 +20,9 @@ Player::Player()
 	al_set_target_bitmap(image);
 	al_draw_filled_triangle(1, 1, player_width, 1, player_width / 2.0, player_height, al_map_rgb(255, 0, 0));
 	al_draw_triangle(0, 1, player_width, 1, player_width / 2.0, player_height, al_map_rgb(255, 255, 255), 1);
+	
+	al_identity_transform(&camera_transform);
+
 	players.push_back(this);
 }
 
@@ -33,8 +36,8 @@ void Player::Draw()
 
 void Player::Move(bool *key)
 {
-	int tempX = x;
-	int tempY = y;
+	float tempX = x;
+	float tempY = y;
 	if (key[ALLEGRO_KEY_DOWN] || key[ALLEGRO_KEY_UP] || key[ALLEGRO_KEY_LEFT] || key[ALLEGRO_KEY_RIGHT])
 		moveTimer++;
 
@@ -48,11 +51,26 @@ void Player::Move(bool *key)
 		if (World::getTile(tempX, tempY)->isWalkable())
 		{
 			x = tempX; y = tempY;
+			Transform_Camera();
 		}
 	}
 
+}
 
+void Player::Transform_Camera()
+{
+	float x = Player::x * Tile::TILE_W; float y = Player::y * Tile::TILE_H;
+	float w = al_get_display_width(al_get_current_display());
+	float h = al_get_display_height(al_get_current_display());
 
+	al_transform_coordinates(&camera_transform, &x, &y);
+	if (x < .33*w || x > .66*w) al_translate_transform(&camera_transform, (.5*w - x) * 0.1, 0);
+	if (y < .33*h || y > .66*h) al_translate_transform(&camera_transform, 0, (.5*h - y) * 0.1);
+}
+
+const ALLEGRO_TRANSFORM * Player::Get_Transform()
+{
+	return &camera_transform;
 }
 
 
