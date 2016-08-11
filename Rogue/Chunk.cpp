@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Chunk.h"
 #include "Forest_Tree.h"
+#include "Forest_Floor.h"
 
 Chunk::Chunk()
 {
@@ -21,6 +22,22 @@ void Chunk::Draw(int x, int y)
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++)
 			data[i][j]->Draw(i*Tile::TILE_W + x, j*Tile::TILE_H + y);
+}
+
+Chunk* Chunk::generateChunk()
+{
+	Chunk *chunk = new Chunk();
+	for (int i = 0; i < Chunk::size; i++)
+		for (int j = 0; j < Chunk::size; j++)
+		{
+			if (std::rand() % 2)
+			{
+				chunk->data[i][j] = new Forest_Tree();
+			}
+			else
+				chunk->data[i][j] = new Forest_Floor();
+		}
+	return chunk;
 }
 
 Chunk* Chunk::_impassable;

@@ -21,8 +21,6 @@ public:
 
 	static bool TileOutOfBounds(int x, int y);
 
-	static Chunk* generateChunk();
-
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
 	static void GetChunksAroundPlayer(Player * p);

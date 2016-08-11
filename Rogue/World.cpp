@@ -19,20 +19,7 @@ bool World::TileOutOfBounds(int x, int y)
 	return x < 0 || y < 0 || x / Chunk::size > WorldSize || y / Chunk::size > WorldSize;
 }
 
-Chunk* World::generateChunk()
-{
-	Chunk *chunk = new Chunk();
-	for (int i = 0; i < Chunk::size; i++)
-		for (int j = 0; j < Chunk::size; j++)
-		{
-			if (std::rand() % 2)
-			{
-				chunk->data[i][j] = new Forest_Tree();
-			} else
-				chunk->data[i][j] = new Forest_Floor();
-		}
-	return chunk;
-}
+
 
 void World::SetDisplay(ALLEGRO_BITMAP *display)
 {
@@ -57,7 +44,7 @@ void World::GetChunksAroundPlayer(Player *p)
 			if (OutOfBounds(p->x / Chunk::size + i, p->y / Chunk::size + j)) continue;
 			else if (World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] == NULL)
 			{
-				World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] = generateChunk();
+				World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] = Chunk::generateChunk();
 			}
 		}
 }
