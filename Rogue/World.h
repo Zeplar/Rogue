@@ -17,12 +17,17 @@ class World
 public:
 	static const int WorldSize = 128;
 
+	static bool OutOfBounds(int x, int y); //True if the given chunk is outside the chunk array
+
+	static bool TileOutOfBounds(int x, int y);
+
 	static Chunk* generateChunk();
 
-	static void Draw();
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
 	static void GetChunksAroundPlayer(Player * p);
+
+	static void Draw(Player * p);
 
 	static void Initialize();
 

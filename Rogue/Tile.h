@@ -5,10 +5,15 @@
 class Tile
 {
 	friend class World;
+
+
 public:
 	Tile();
 	~Tile();
-	virtual bool isWalkable() = 0;
+	enum Characteristics { Walkable, Flyable, Swimmable, SpawnsEnemies };
+
+	const bool* Characteristics();
+	void SetCharacteristic(int Characteristic, bool setting);
 	void Draw(int x, int y);
 
 	static int RegisterImage(const char TileName[]);	//Searches for the given image and creates an ALLEGRO_BITMAP in the Tiles registry.
@@ -22,6 +27,7 @@ protected:
 	virtual int RegisterImage() = 0;	//Should call exactly one of the predefined RegisterImage() commands to add an image to the Tiles registry and receive an ID.
 	static int numTiles;
 	int TileID;
+	bool _characteristics[8];
 
 };
 

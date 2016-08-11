@@ -3,9 +3,11 @@
 
 int Forest_Tree::ID = 0;
 
-Forest_Tree::Forest_Tree()
+Forest_Tree::Forest_Tree() : Tile()
 {
+
 	TileID = ID;
+	_characteristics[Characteristics::Flyable] = true;
 }
 
 
@@ -36,10 +38,4 @@ int Forest_Tree::RegisterImage()
 	fprintf(stderr, "Forest_Tree ID: %d\n", ID);
 
 	return ID;
-}
-
-
-bool Forest_Tree::isWalkable()
-{
-	return false;
 }

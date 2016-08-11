@@ -8,7 +8,6 @@ class Forest_Tree :
 public:
 	Forest_Tree();
 	~Forest_Tree();
-	bool isWalkable();
 	int RegisterImage();
 private:
 	static int ID;

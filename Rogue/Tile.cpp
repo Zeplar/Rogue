@@ -7,11 +7,24 @@ std::vector<ALLEGRO_BITMAP*> Tile::AllTiles(32);
 
 Tile::Tile()
 {
+	for (int i = 0; i < 8; i++)
+		_characteristics[i] = false;
 }
 Tile::~Tile()
 {
 
 }
+
+const bool* Tile::Characteristics()
+{
+	return _characteristics;
+}
+
+void Tile::SetCharacteristic(int characteristic, bool setting)
+{
+	_characteristics[characteristic] = setting;
+}
+
 void Tile::Draw(int x, int y)
 {
 	if (AllTiles[TileID] == NULL)

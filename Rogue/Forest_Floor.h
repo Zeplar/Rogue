@@ -5,7 +5,6 @@
 class Forest_Floor : public Tile
 {
 public:
-	bool isWalkable();
 	int RegisterImage();
 	Forest_Floor();
 	~Forest_Floor();

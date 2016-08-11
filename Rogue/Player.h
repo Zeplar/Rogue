@@ -14,7 +14,7 @@ public:
 	ALLEGRO_BITMAP *image;
 
 	float direction; //direction in radians
-
+	int MovementType;
 	int hp, mp;
 
 	void Draw();

@@ -11,17 +11,14 @@ int Forest_Floor::RegisterImage()
 	return ID;
 }
 
-Forest_Floor::Forest_Floor()
+Forest_Floor::Forest_Floor() : Tile()
 {
 	TileID = ID;
+	_characteristics[Characteristics::Walkable] = true;
+	_characteristics[Characteristics::Flyable] = true;
+	_characteristics[Characteristics::SpawnsEnemies] = true;
 }
 
 Forest_Floor::~Forest_Floor()
 {
-}
-
-
-bool Forest_Floor::isWalkable()
-{
-	return true;
 }
