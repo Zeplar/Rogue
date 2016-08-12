@@ -18,6 +18,7 @@ protected:
 	int x, y;
 	std::vector<bool> Entity_Characteristics;
 	double getDirection(int Entity_Direction);
+	void getDirection(int &dx, int &dy);
 
 };
 

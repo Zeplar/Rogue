@@ -9,6 +9,8 @@ Tile::Tile()
 {
 	for (int i = 0; i < 8; i++)
 		_characteristics[i] = false;
+
+	std::unique_ptr<Entity> entity;
 }
 Tile::~Tile()
 {

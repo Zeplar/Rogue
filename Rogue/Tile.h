@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
-class Creature;
+#include "Entity.h"
+
 class Tile
 {
 	friend class World;
@@ -27,6 +28,6 @@ protected:
 	static int numTiles;
 	int TileID;
 	bool _characteristics[8];
-	Creature *entity;
+	std::unique_ptr<Entity> entity;
 };
 

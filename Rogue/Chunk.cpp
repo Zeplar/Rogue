@@ -113,9 +113,9 @@ std::vector<int> * Chunk::chunk_generate_cell_sample(int minimum, int optimal, i
 
 
 
-Chunk* Chunk::_impassable;
+Chunk *Chunk::_impassable;
 
-Chunk* Chunk::Impassable_Chunk()
+Chunk& Chunk::Impassable_Chunk()
 {
 	if (!_impassable) {
 		_impassable = new Chunk();
@@ -126,5 +126,5 @@ Chunk* Chunk::Impassable_Chunk()
 				_impassable->data[i][j] = filler;
 	}
 
-	return _impassable;
+	return *_impassable;
 }

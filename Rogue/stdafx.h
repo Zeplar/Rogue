@@ -18,6 +18,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdexcept>
+#include <memory>
 
 
 // TODO: reference additional headers your program requires here

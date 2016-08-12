@@ -29,7 +29,7 @@ public:
 
 	static void Initialize();
 
-	static Tile* getTile(int x, int y);
+	static Tile& getTile(int x, int y);
 
 private:
 	static Chunk* chunks[WorldSize][WorldSize];

@@ -38,6 +38,43 @@ double Entity::getDirection(int Entity_Direction)
 	}
 }
 
+//Fills in the x,y offset to the tile the player is looking at
+void Entity::getDirection(int & dx, int & dy)
+{
+	switch (direction)
+	{
+	case Direction::N:
+	case Direction::NE:
+	case Direction::NW:
+		dy = -1;
+		break;
+	case Direction::S:
+	case Direction::SW:
+	case Direction::SE:
+		dy = 1;
+		break;
+	default:
+		dy = 0;
+		break;
+	}
+	switch (direction)
+	{
+		case Direction::NE:
+		case Direction::E:
+		case Direction::SE:
+			dx = 1;
+			break;
+		case Direction::NW:
+		case Direction::W:
+		case Direction::SW:
+			dx = -1;
+			break;
+		default:
+			dx = 0;
+			break;
+	}
+}
+
 Entity::~Entity()
 {
 }

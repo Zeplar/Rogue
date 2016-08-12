@@ -30,10 +30,14 @@ Player::Player()
 
 	players.push_back(this);
 }
-
+//
 //void Player::Punch()
 //{
-//	Tile* target_location = World::getTile()
+//	int dx, dy;
+//	getDirection(dx, dy);
+//	Tile* target_location = World::getTile(dx, dy);
+//
+//	if (target_location->)
 //}
 
 void Player::Behavior() {}
@@ -71,7 +75,7 @@ void Player::Move(const std::vector<bool>& key)
 		tempX = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT] + x;
 		tempY = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP] + y;
 
-		if (World::getTile(tempX, tempY)->Characteristics()[MovementType])
+		if (World::getTile(tempX, tempY).Characteristics()[MovementType])
 		{
 			x = tempX; y = tempY;
 		}

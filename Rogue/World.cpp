@@ -27,11 +27,11 @@ void World::SetDisplay(ALLEGRO_BITMAP *display)
 }
 
 //Returns the tile at the given coordinate
-Tile* World::getTile(int x, int y)
+Tile& World::getTile(int x, int y)
 {
-	if (TileOutOfBounds(x, y)) return Chunk::Impassable_Chunk()->data[0][0];
+	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk().data[0][0];
 
-	return chunks[x / Chunk::size][y / Chunk::size]->data[x % Chunk::size][y % Chunk::size];
+	return *chunks[x / Chunk::size][y / Chunk::size]->data[x % Chunk::size][y % Chunk::size];
 }
 
 
@@ -60,7 +60,7 @@ void World::Draw(Player *p)
 	for (int i= p->x / Chunk::size - RenderDistance; i < p->x / Chunk::size + RenderDistance; i++)
 		for (int j = p->y / Chunk::size - RenderDistance; j < p->y / Chunk::size + RenderDistance; j ++)
 		{
-			if (OutOfBounds(i, j)) Chunk::Impassable_Chunk()->Draw(i*Tile::TILE_W *Chunk::size, j*Tile::TILE_H * Chunk::size);
+			if (OutOfBounds(i, j)) Chunk::Impassable_Chunk().Draw(i*Tile::TILE_W *Chunk::size, j*Tile::TILE_H * Chunk::size);
 			else if (chunks[i][j] != NULL)
 			{
 				chunks[i][j]->Draw(i*Tile::TILE_W*Chunk::size, j*Tile::TILE_H*Chunk::size);
