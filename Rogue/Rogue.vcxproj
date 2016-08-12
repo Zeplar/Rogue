@@ -158,8 +158,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="Creature.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Forest_Floor.h" />
     <ClInclude Include="Forest_Tree.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -169,8 +172,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Forest_Floor.cpp" />
     <ClCompile Include="Forest_Tree.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rogue.cpp" />
     <ClCompile Include="stdafx.cpp">

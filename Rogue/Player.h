@@ -1,33 +1,30 @@
 #pragma once
 #include "stdafx.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include <vector>
-#include "Tile.h"
-class Player
+#include "Entity.h"
+#include "Creature.h"
+#include "Item.h"
+class World;
+
+class Player : public Creature
 {
 public:
 	Player();
 	~Player();
-	int x, y;
-	float speed;
-	ALLEGRO_BITMAP *image;
 
-	float direction; //direction in radians
-	int MovementType;
-	int hp, mp;
-
-	void Draw();
-	void Move(bool *key);
-	const ALLEGRO_TRANSFORM *Get_Transform();
-
-
+	void Move(const std::vector<bool>& key);
+	const ALLEGRO_TRANSFORM& Get_Transform();
+	void Behavior();
 	static Player* primaryPlayer;
 
 private:
 	static std::vector<Player*> players;
-	float moveTimer = 0;
+	void Punch();
 	ALLEGRO_TRANSFORM camera_transform;
 	void Transform_Camera();
+	void SetDirection(const std::vector<bool>& key);
+	std::vector<Item> Items;
+	Item *Weapon;
+
+	friend class World;
 };
 

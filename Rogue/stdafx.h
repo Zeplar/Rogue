@@ -13,7 +13,11 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_color.h>
 #include <allegro5\allegro_image.h>
-
+#include <vector>
+#include <algorithm>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <stdexcept>
 
 
 // TODO: reference additional headers your program requires here

@@ -18,27 +18,46 @@ Player::Player()
 	x = y = 0;
 	MovementType = Tile::Characteristics::Flyable;
 
+	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/creatures/Player.bmp");
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
 	al_set_target_bitmap(image);
-	al_draw_filled_triangle(1, 1, player_width, 1, player_width / 2.0, player_height, al_map_rgb(255, 0, 0));
-	al_draw_triangle(0, 1, player_width, 1, player_width / 2.0, player_height, al_map_rgb(255, 255, 255), 1);
-	
+	float xs = (float)Tile::TILE_W / al_get_bitmap_width(raw);
+	float ys = (float)Tile::TILE_H / al_get_bitmap_height(raw);
+	al_draw_scaled_rotated_bitmap(raw, al_get_bitmap_width(raw) / 2, al_get_bitmap_height(raw) / 2, Tile::TILE_W / 2, Tile::TILE_H / 2, xs, ys, M_PI, 0);
+	al_destroy_bitmap(raw);
+	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
 	al_identity_transform(&camera_transform);
 
 	players.push_back(this);
 }
 
-void Player::Draw()
-{
-	al_draw_rotated_bitmap(image, player_width / 2.0, player_height / 2.0,
-		x * Tile::TILE_W + Tile::TILE_W/2, 
-		y * Tile::TILE_H + Tile::TILE_H/2, 
-		direction + M_PI, 0);
+//void Player::Punch()
+//{
+//	Tile* target_location = World::getTile()
+//}
 
-	Transform_Camera();
+void Player::Behavior() {}
+
+void Player::SetDirection(const std::vector<bool>& key)
+{
+	if (key[ALLEGRO_KEY_UP]) {
+		if (key[ALLEGRO_KEY_LEFT]) direction = Entity::Direction::NW;
+		else if (key[ALLEGRO_KEY_RIGHT]) direction = Entity::Direction::NE;
+		else direction = Entity::Direction::N;
+	}
+	else if (key[ALLEGRO_KEY_DOWN]) {
+		if (key[ALLEGRO_KEY_RIGHT]) direction = Direction::SE;
+		else if (key[ALLEGRO_KEY_LEFT]) direction = Direction::SW;
+		else direction = Direction::S;
+	}
+	else {
+		if (key[ALLEGRO_KEY_LEFT]) direction = Direction::W;
+		else if (key[ALLEGRO_KEY_RIGHT]) direction = Direction::E;
+		else direction = Direction::N;
+	}
 }
 
-void Player::Move(bool *key)
+void Player::Move(const std::vector<bool>& key)
 {
 	float tempX = x;
 	float tempY = y;
@@ -48,7 +67,7 @@ void Player::Move(bool *key)
 	if (moveTimer >= speed)
 	{
 		moveTimer = 0;
-		direction = (key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT]) * M_PI_2 + key[ALLEGRO_KEY_DOWN] * M_PI;
+		SetDirection(key);
 		tempX = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT] + x;
 		tempY = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP] + y;
 
@@ -74,9 +93,9 @@ void Player::Transform_Camera()
 
 }
 
-const ALLEGRO_TRANSFORM * Player::Get_Transform()
+const ALLEGRO_TRANSFORM& Player::Get_Transform()
 {
-	return &camera_transform;
+	return camera_transform;
 }
 
 

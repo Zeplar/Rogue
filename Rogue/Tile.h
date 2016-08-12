@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include <vector>
-
+class Creature;
 class Tile
 {
 	friend class World;
@@ -28,6 +27,6 @@ protected:
 	static int numTiles;
 	int TileID;
 	bool _characteristics[8];
-
+	Creature *entity;
 };
 

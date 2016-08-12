@@ -26,16 +26,16 @@ void World::SetDisplay(ALLEGRO_BITMAP *display)
 	World::display = display;
 }
 
+//Returns the tile at the given coordinate
 Tile* World::getTile(int x, int y)
 {
-	fprintf(stderr, "%d :: %d, %d :: %d\n", x, x / Chunk::size, y, y / Chunk::size);
 	if (TileOutOfBounds(x, y)) return Chunk::Impassable_Chunk()->data[0][0];
 
 	return chunks[x / Chunk::size][y / Chunk::size]->data[x % Chunk::size][y % Chunk::size];
 }
 
 
-
+//Generates the chunks RenderDistance radius around the given player, if they have not already been generated.
 void World::GetChunksAroundPlayer(Player *p)
 {
 	for (int i = -RenderDistance; i <= RenderDistance; i++)
@@ -44,7 +44,7 @@ void World::GetChunksAroundPlayer(Player *p)
 			if (OutOfBounds(p->x / Chunk::size + i, p->y / Chunk::size + j)) continue;
 			else if (World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] == NULL)
 			{
-				World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] = Chunk::generateChunk();
+				World::chunks[p->x / Chunk::size + i][p->y / Chunk::size + j] = Chunk::generateChunk(Chunk::chunk_generate_growth_sample(10, 4));
 			}
 		}
 }

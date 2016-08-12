@@ -19,7 +19,7 @@ int main()
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 
-	bool key[ALLEGRO_KEY_MAX]; //Array indicating which keys were pressed last time we checked
+	std::vector<bool> key(ALLEGRO_KEY_MAX); //Array indicating which keys were pressed last time we checked
 	for (int i = 0; i < ALLEGRO_KEY_MAX; i++) key[i] = false;
 	bool redraw = false;	//Indicates that it's time to draw everything
 
@@ -110,7 +110,7 @@ int main()
 			redraw = false;
 			al_set_target_bitmap(al_get_backbuffer(display));
 			al_clear_to_color(al_map_rgb(0, 0, 0));
-			al_use_transform(Player::primaryPlayer->Get_Transform());
+			al_use_transform(&Player::primaryPlayer->Get_Transform());
 			World::Draw(Player::primaryPlayer);
 			Player::primaryPlayer->Draw();
 			al_flip_display();
