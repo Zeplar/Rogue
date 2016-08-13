@@ -8,7 +8,7 @@ std::vector<ALLEGRO_BITMAP*> Tile::AllTiles(32);
 Tile::Tile()
 {
 	for (int i = 0; i < 8; i++)
-		_characteristics[i] = false;
+		characteristics.push_back(false);
 
 	std::unique_ptr<Entity> entity;
 }
@@ -17,14 +17,14 @@ Tile::~Tile()
 
 }
 
-const bool* Tile::Characteristics()
+const std::vector<bool>& Tile::Characteristics()
 {
-	return _characteristics;
+	return characteristics;
 }
 
 void Tile::SetCharacteristic(int characteristic, bool setting)
 {
-	_characteristics[characteristic] = setting;
+	characteristics[characteristic] = setting;
 }
 
 void Tile::Draw(int x, int y)

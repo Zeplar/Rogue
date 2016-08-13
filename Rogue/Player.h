@@ -8,13 +8,13 @@ class World;
 class Player : public Creature
 {
 public:
-	Player();
 	~Player();
 
 	void Move(const std::vector<bool>& key);
 	const ALLEGRO_TRANSFORM& Get_Transform();
 	void Behavior();
 	static Player* primaryPlayer;
+	static Player *make_player(int x, int y);
 
 private:
 	static std::vector<Player*> players;
@@ -22,8 +22,9 @@ private:
 	ALLEGRO_TRANSFORM camera_transform;
 	void Transform_Camera();
 	void SetDirection(const std::vector<bool>& key);
-	std::vector<Item> Items;
+	std::vector<Item*> Items;
 	Item *Weapon;
+	Player();
 
 	friend class World;
 };

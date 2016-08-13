@@ -7,7 +7,7 @@ Forest_Tree::Forest_Tree() : Tile()
 {
 
 	TileID = ID;
-	_characteristics[Characteristics::Flyable] = true;
+	characteristics[Characteristic::Flyable] = true;
 }
 
 

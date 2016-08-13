@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Tiles">
       <UniqueIdentifier>{bdf1fbd0-92f5-4690-b19a-d2626e5fe666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Creatures">
+      <UniqueIdentifier>{85351ae5-1149-4ec8-937e-ec6de292031e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Creatures">
+      <UniqueIdentifier>{3566c9cc-ef2f-4158-a953-f114cec6414a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -60,6 +66,12 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Tiles.h">
+      <Filter>Header Files\Tiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -94,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>Source Files\Creatures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

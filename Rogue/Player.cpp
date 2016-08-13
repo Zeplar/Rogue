@@ -15,8 +15,7 @@ Player* Player::primaryPlayer = NULL;
 Player::Player()
 {
 	speed = 20;
-	x = y = 0;
-	MovementType = Tile::Characteristics::Flyable;
+	MovementType = Tile::Characteristic::Flyable;
 
 	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/creatures/Player.bmp");
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
@@ -28,17 +27,30 @@ Player::Player()
 	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
 	al_identity_transform(&camera_transform);
 
-	players.push_back(this);
 }
-//
-//void Player::Punch()
-//{
-//	int dx, dy;
-//	getDirection(dx, dy);
-//	Tile* target_location = World::getTile(dx, dy);
-//
-//	if (target_location->)
-//}
+
+Player* Player::make_player(int x, int y)
+{
+	Player *p = new Player();
+	p->x = x;
+	p->y = y;
+	players.push_back(p);
+	World::GetChunksAroundEntity(*p);
+	World::getTile(x, y).entity = std::unique_ptr<Player>(p);
+	return p;
+}
+
+void Player::Punch()
+{
+	int dx, dy;
+	getDirection(dx, dy);
+	Tile& target_location = World::getTile(x+dx, y+dy);
+
+	if (target_location.entity && target_location.entity->Entity_Characteristics[Is_Creature])
+	{
+		dynamic_cast<Creature&>(*target_location.entity.get()).hp--;
+	}
+}
 
 void Player::Behavior() {}
 
@@ -63,22 +75,18 @@ void Player::SetDirection(const std::vector<bool>& key)
 
 void Player::Move(const std::vector<bool>& key)
 {
-	float tempX = x;
-	float tempY = y;
-	if (key[ALLEGRO_KEY_DOWN] || key[ALLEGRO_KEY_UP] || key[ALLEGRO_KEY_LEFT] || key[ALLEGRO_KEY_RIGHT])
-		moveTimer++;
+	int dx, dy;
+	Transform_Camera();
 
 	if (moveTimer >= speed)
 	{
 		moveTimer = 0;
 		SetDirection(key);
-		tempX = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT] + x;
-		tempY = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP] + y;
+		dx = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT];
+		dy = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP];
 
-		if (World::getTile(tempX, tempY).Characteristics()[MovementType])
-		{
-			x = tempX; y = tempY;
-		}
+		Creature::Move(dx, dy);
+
 	}
 
 }

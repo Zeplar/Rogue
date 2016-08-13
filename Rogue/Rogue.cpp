@@ -68,8 +68,8 @@ int main()
 
 	
 	World::SetDisplay(al_get_backbuffer(display));
-	Player::primaryPlayer = new Player();
 	World::Initialize();
+	Player::primaryPlayer = Player::make_player(10, 10);
 	//=================================================================================================================
 
 	//Main loop
@@ -84,6 +84,7 @@ int main()
 			//Do anything that's framelocked
 
 			//Player logic
+			World::Update();
 			Player::primaryPlayer->Move(key);
 
 			//Prep the screen for drawing
@@ -111,7 +112,7 @@ int main()
 			al_set_target_bitmap(al_get_backbuffer(display));
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			al_use_transform(&Player::primaryPlayer->Get_Transform());
-			World::Draw(Player::primaryPlayer);
+			World::Draw(*Player::primaryPlayer);
 			Player::primaryPlayer->Draw();
 			al_flip_display();
 		}

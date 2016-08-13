@@ -10,9 +10,9 @@ class Tile
 public:
 	Tile();
 	~Tile();
-	enum Characteristics { Walkable, Flyable, Swimmable, SpawnsEnemies };
+	enum Characteristic { Walkable, Flyable, Swimmable, SpawnsEnemies };
 
-	const bool* Characteristics();
+	const std::vector<bool>& Characteristics();
 	void SetCharacteristic(int Characteristic, bool setting);
 	void Draw(int x, int y);
 
@@ -21,13 +21,14 @@ public:
 
 	static const int TILE_W = 30;
 	static const int TILE_H = 30;
+	std::unique_ptr<Entity> entity;
+
 
 protected:
 	static std::vector<ALLEGRO_BITMAP*> AllTiles;
 	virtual int RegisterImage() = 0;	//Should call exactly one of the predefined RegisterImage() commands to add an image to the Tiles registry and receive an ID.
 	static int numTiles;
 	int TileID;
-	bool _characteristics[8];
-	std::unique_ptr<Entity> entity;
+	std::vector<bool> characteristics;
 };
 

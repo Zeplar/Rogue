@@ -6,8 +6,6 @@
 #include <time.h>
 #include "Tile.h"
 #include "Chunk.h"
-#include "Forest_Floor.h"
-#include "Forest_Tree.h"
 #include <random>
 #include "Player.h"
 
@@ -23,13 +21,15 @@ public:
 
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
-	static void GetChunksAroundPlayer(Player * p);
+	static std::unique_ptr<std::vector<Chunk*>> GetChunksAroundEntity(const Entity& entity);
 
-	static void Draw(Player * p);
+	static void Draw(const Player& p);
 
 	static void Initialize();
 
 	static Tile& getTile(int x, int y);
+
+	static void Update();
 
 private:
 	static Chunk* chunks[WorldSize][WorldSize];

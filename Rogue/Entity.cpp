@@ -14,7 +14,18 @@ void Entity::Draw()
 		getDirection(direction) + M_PI, 0);
 }
 
-double Entity::getDirection(int Entity_Direction)
+void Entity::SetPosition(int x, int y)
+{
+	this->x = x; this->y = y;
+}
+
+void Entity::GetPosition(int& x, int &y) const
+{
+	x = this->x; y = this->y;
+}
+
+//Takes an Entity::Direction and returns a direction in radians
+double Entity::getDirection(Entity::Direction Entity_Direction)
 {
 	switch (Entity_Direction) {
 	case Direction::N:
@@ -38,7 +49,7 @@ double Entity::getDirection(int Entity_Direction)
 	}
 }
 
-//Fills in the x,y offset to the tile the player is looking at
+//Gets the entity's current direction as an x,y offset
 void Entity::getDirection(int & dx, int & dy)
 {
 	switch (direction)

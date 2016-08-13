@@ -120,7 +120,7 @@ Chunk& Chunk::Impassable_Chunk()
 	if (!_impassable) {
 		_impassable = new Chunk();
 		Forest_Tree* filler = new Forest_Tree();
-		filler->SetCharacteristic(Tile::Characteristics::Flyable, false);
+		filler->SetCharacteristic(Tile::Characteristic::Flyable, false);
 		for (int i = 0; i < 16; i++)
 			for (int j = 0; j < 16; j++)
 				_impassable->data[i][j] = filler;

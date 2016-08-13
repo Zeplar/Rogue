@@ -14,9 +14,9 @@ int Forest_Floor::RegisterImage()
 Forest_Floor::Forest_Floor() : Tile()
 {
 	TileID = ID;
-	_characteristics[Characteristics::Walkable] = true;
-	_characteristics[Characteristics::Flyable] = true;
-	_characteristics[Characteristics::SpawnsEnemies] = true;
+	characteristics[Characteristic::Walkable] = true;
+	characteristics[Characteristic::Flyable] = true;
+	characteristics[Characteristic::SpawnsEnemies] = true;
 }
 
 Forest_Floor::~Forest_Floor()
