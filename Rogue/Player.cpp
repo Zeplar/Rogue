@@ -9,12 +9,8 @@ const int player_width = 10;
 const int player_height = 20;
 const int TIME_TO_MOVE = 20;
 
-std::vector<Player*> Player::players = std::vector<Player*>();
-Player* Player::primaryPlayer = NULL;
-ALLEGRO_SAMPLE *Player::sound_attack = 0;
-ALLEGRO_SAMPLE *Player::sound_move = 0;
 
-Player::Player()
+Player::Player() : Creature("Player")
 {
 	speed = 20;
 	MovementType = Tile::Characteristic::Flyable;
@@ -39,9 +35,7 @@ Player* Player::make_player(int x, int y)
 	p->x = x;
 	p->y = y;
 	p->hp = 100;
-	players.push_back(p);
-	World::GetChunksAroundEntity(*p);
-	World::getTile(x, y).entity = std::unique_ptr<Player>(p);
+	World::RegisterPlayer(p);
 	return p;
 }
 
@@ -59,7 +53,7 @@ void Player::Punch()
 
 void Player::Behavior() 
 {
-
+	Move(World::key);
 }
 
 void Player::SetDirection(const std::vector<bool>& key)
@@ -82,7 +76,6 @@ void Player::Move(const std::vector<bool>& key)
 		dy = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP];
 
 		Creature::Move(dx, dy);
-
 	}
 
 }
@@ -101,13 +94,14 @@ void Player::Transform_Camera()
 
 }
 
-const ALLEGRO_TRANSFORM& Player::Get_Transform()
+const ALLEGRO_TRANSFORM* Player::Get_Transform() const
 {
-	return camera_transform;
+	return &camera_transform;
 }
 
 
 Player::~Player()
 {
 	al_destroy_bitmap(image);
+	World::UnregisterPlayer(this);
 }

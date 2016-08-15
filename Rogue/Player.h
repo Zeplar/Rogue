@@ -10,14 +10,11 @@ class Player : public Creature
 public:
 	~Player();
 
-	void Move(const std::vector<bool>& key);
-	const ALLEGRO_TRANSFORM& Get_Transform();
+	const ALLEGRO_TRANSFORM* Get_Transform() const;
 	void Behavior();
-	static Player* primaryPlayer;
 	static Player *make_player(int x, int y);
 
 private:
-	static std::vector<Player*> players;
 	void Punch();
 	ALLEGRO_TRANSFORM camera_transform;
 	void Transform_Camera();
@@ -25,7 +22,7 @@ private:
 	std::vector<Item*> Items;
 	Item *Weapon;
 	Player();
+	void Move(const std::vector<bool>& key);
 
-	friend class World;
 };
 

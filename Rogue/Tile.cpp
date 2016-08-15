@@ -10,8 +10,9 @@ Tile::Tile()
 	for (int i = 0; i < 8; i++)
 		characteristics.push_back(false);
 
-	std::unique_ptr<Entity> entity;
+	std::unique_ptr<Entity> entity = nullptr;
 }
+
 Tile::~Tile()
 {
 
@@ -27,15 +28,18 @@ void Tile::SetCharacteristic(int characteristic, bool setting)
 	characteristics[characteristic] = setting;
 }
 
-void Tile::Draw(int x, int y)
+void Tile::Draw()
 {
 	if (AllTiles[TileID] == NULL)
 	{
-		fprintf(stderr, "Error: Null tile bitmap.\n");
+		std::cerr << "Error: Null tile bitmap.\n";
 		return;
 	}
-	al_draw_bitmap(Tile::AllTiles[TileID], x, y, 0);
-	if (entity) entity->Draw();
+	al_draw_bitmap(Tile::AllTiles[TileID], 0, 0, 0);
+	if (entity)
+	{
+		entity->Draw();
+	}
 }
 
 int Tile::RegisterImage(const char TileName[])

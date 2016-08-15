@@ -5,7 +5,7 @@ class Chunk
 public:
 	Chunk();
 	~Chunk();
-	void Draw(int x, int y);
+	void Draw();
 	static const int size = 16;
 	Tile *data[size][size];
 
