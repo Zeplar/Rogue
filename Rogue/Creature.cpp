@@ -15,9 +15,18 @@ void Creature::Draw()
 	Entity::Draw();
 }
 
-void Creature::takeDamage(int damage, Player & source)
+//Releases the tile pointer to this creature
+void Creature::Die()
+{
+	World::getTile(x, y).entity.release();
+}
+
+//Takes damage and calls virtual Die() if hp <= 0
+void Creature::takeDamage(int damage, Entity & source)
 {
 	hp -= damage;
+	if (hp <= 0)
+		Die();
 }
 
 //Returns true if the chessboard distance of the entity is less than or equal to <+range>
@@ -112,7 +121,6 @@ private:
 		while (current != start)
 		{
 			ret->push_back(index_to_coord(current, radius));
-			std::cout << ret->back().first << "," << ret->back().second << std::endl;
 			current = came_from[current];
 		}
 		return ret;

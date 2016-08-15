@@ -68,7 +68,7 @@ void Skeleton::Attack()
 	Tile& target = World::getTile(x + dx, y + dy);
 	if (target.entity && dynamic_cast<Creature*>(target.entity.get()))
 	{
-		dynamic_cast<Creature*>(target.entity.get())->hp--;
+		dynamic_cast<Creature*>(target.entity.get())->takeDamage(5, *this);
 		al_play_sample(sound_attack, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
 }

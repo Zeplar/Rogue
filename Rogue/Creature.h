@@ -15,7 +15,9 @@ public:
 	enum Animations {N, NE, E, SE, S, SW, W, NW};
 	virtual void Update();
 	void Draw();
-	virtual void takeDamage(int damage, Player& source);
+
+	//Takes damage and calls virtual Die() if hp <= 0
+	virtual void takeDamage(int damage, Entity& source);
 protected:
 	int moveTimer = 0;
 
@@ -32,6 +34,8 @@ protected:
 	static ALLEGRO_SAMPLE *sound_attack;
 	static ALLEGRO_SAMPLE *sound_move;
 
+	//Releases the tile pointer to this creature
+	virtual void Die();
 
 private:
 	class A_Star;

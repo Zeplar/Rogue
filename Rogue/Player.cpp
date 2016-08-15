@@ -59,7 +59,7 @@ void Player::Punch()
 
 void Player::Behavior() 
 {
-	if (moveTimer == speed) std::cout << "Player: (" << x << "," << y << ") " << hp << std::endl;
+
 }
 
 void Player::SetDirection(const std::vector<bool>& key)
