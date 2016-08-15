@@ -7,8 +7,6 @@
 #include "Tile.h"
 #include "Chunk.h"
 #include <random>
-#include "Player.h"
-
 
 class World
 {
@@ -21,20 +19,35 @@ public:
 
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
-	static std::unique_ptr<std::vector<Chunk*>> GetChunksAroundEntity(const Entity& entity);
+	static std::unique_ptr<std::vector<Chunk*>> GetChunksAround(int x, int y);
 
-	static void Draw(const Player& p);
+	static void Draw(int x, int y);
 
 	static void Initialize();
 
+
+
 	static Tile& getTile(int x, int y);
 
-	static Tile& getTile(coord & c);
+	static Tile& getTile(const coord & c);
 
 	static void Update();
+
+	static bool Push_Matrix(const ALLEGRO_TRANSFORM *transform);
+	static bool Pop_Matrix();
+
+	static std::vector<bool> key; //Array indicating which keys were pressed last time we checked
+
+	static void RegisterPlayer(Entity * p);
+
+	static void UnregisterPlayer(Entity *p);
 
 private:
 	static Chunk* chunks[WorldSize][WorldSize];
 	static ALLEGRO_BITMAP *display;
+	static ALLEGRO_TRANSFORM transforms[16];
+	static int transform_index;
+	static std::vector<Entity*> players;
+
 };
 

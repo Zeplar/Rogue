@@ -14,7 +14,6 @@ public:
 	enum Characteristics {Hostile};
 	enum Animations {N, NE, E, SE, S, SW, W, NW};
 	virtual void Update();
-	void Draw();
 
 	//Takes damage and calls virtual Die() if hp <= 0
 	virtual void takeDamage(int damage, Entity& source);
@@ -36,6 +35,7 @@ protected:
 
 	//Releases the tile pointer to this creature
 	virtual void Die();
+	Creature(std::string name);
 
 private:
 	class A_Star;

@@ -170,6 +170,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Forest_Floor.h" />
     <ClInclude Include="Forest_Tree.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Forest_Floor.cpp" />
     <ClCompile Include="Forest_Tree.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rogue.cpp" />

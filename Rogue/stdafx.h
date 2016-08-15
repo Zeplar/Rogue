@@ -23,6 +23,7 @@
 #include <memory>
 #include <iostream>
 #include <array>
+#include <string>
 
 // TODO: reference additional headers your program requires here
 typedef std::pair<int, int> coord;

@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Creature.h"
 #include "World.h"
+#include "Player.h"
+
+ALLEGRO_SAMPLE *Creature::sound_attack;
 
 void Creature::Update()
 {
@@ -10,10 +13,7 @@ void Creature::Update()
 
 ALLEGRO_BITMAP *Creature::dir_marker = 0;
 
-void Creature::Draw()
-{
-	Entity::Draw();
-}
+Creature::Creature(std::string name) : Entity(name) {}
 
 //Releases the tile pointer to this creature
 void Creature::Die()
@@ -42,7 +42,7 @@ void Creature::Find_Target_Player(int range)
 {
 	if (!(target && IsInRange(*target, range) && dynamic_cast<Player*>(target)))
 	{
-		auto chunks = World::GetChunksAroundEntity(*this);
+		auto chunks = World::GetChunksAround(x, y);
 		for each (Chunk *c in *chunks)
 			for each (Tile *t in c->data)
 				if (t->entity && dynamic_cast<Player*>(t->entity.get()) && IsInRange(*t->entity, range))

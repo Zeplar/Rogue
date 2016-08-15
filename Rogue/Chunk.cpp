@@ -2,6 +2,7 @@
 #include "Chunk.h"
 #include "Forest_Tree.h"
 #include "Forest_Floor.h"
+#include "World.h"
 
 Chunk::Chunk()
 {
@@ -16,12 +17,16 @@ Chunk::~Chunk()
 	}
 }
 
-void Chunk::Draw(int x, int y)
+void Chunk::Draw()
 {
-	
+	ALLEGRO_TRANSFORM temp;
 	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
-			data[i][j]->Draw(i*Tile::TILE_W + x, j*Tile::TILE_H + y);
+		for (int j = 0; j < size; j++) {
+			al_build_transform(&temp, i*Tile::TILE_W, j*Tile::TILE_H, 1, 1, 0);
+			World::Push_Matrix(&temp);
+			data[i][j]->Draw();
+			World::Pop_Matrix();
+		}
 }
 
 Chunk* Chunk::generateChunk(std::vector<int>* sample)

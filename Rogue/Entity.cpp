@@ -2,20 +2,21 @@
 #include "Entity.h"
 #include "Tile.h"
 
-Entity::Entity()
+Entity::Entity(std::string name)
 {
+	this->name = name;
 }
+
 
 void Entity::Draw()
 {
-	int xpos = Tile::TILE_W * x + (Tile::TILE_W - al_get_bitmap_width(image)) / 2;
-	int ypos = Tile::TILE_H * y + (Tile::TILE_H - al_get_bitmap_height(image)) / 2;
-
+	if (!image) std::cerr << "No image registered on entity\n";
 
 	if (al_get_bitmap_width(image) > Tile::TILE_W * 8)
-		al_draw_bitmap_region(image, Tile::TILE_W * direction, 0, Tile::TILE_W, Tile::TILE_H, xpos, ypos, 0);
+		al_draw_bitmap_region(image, Tile::TILE_W * direction, 0, Tile::TILE_W, Tile::TILE_H, 0, 0, 0);
+
 	else
-		al_draw_bitmap(image, xpos, ypos, 0);
+		al_draw_bitmap(image, 0, 0, 0);
 
 }
 

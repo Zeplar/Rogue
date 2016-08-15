@@ -1,10 +1,9 @@
 #pragma once
 class Entity
 {
-friend class World;
 
 public:
-	Entity();
+	Entity(std::string name);
 	~Entity();
 	virtual void Draw();
 	virtual void Behavior() = 0;
@@ -16,6 +15,9 @@ public:
 
 	void SetPosition(int x, int y);
 	void GetPosition(int& x, int& y) const;
+	std::string name;
+
+
 
 protected:
 
@@ -25,6 +27,7 @@ protected:
 	double getDirection(Direction EntityDirection);
 	void getDirection(int &dx, int &dy);
 	void SetDirection(int &dx, int &dy);
+
 
 };
 

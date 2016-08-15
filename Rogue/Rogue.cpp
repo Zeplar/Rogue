@@ -7,6 +7,7 @@
 #include "World.h"
 #include <random>
 #include "Skeleton.h"
+#include "Player.h"
 
 
 int main()
@@ -18,8 +19,6 @@ int main()
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 
-	std::vector<bool> key(ALLEGRO_KEY_MAX); //Array indicating which keys were pressed last time we checked
-	for (int i = 0; i < ALLEGRO_KEY_MAX; i++) key[i] = false;
 	bool redraw = false;	//Indicates that it's time to draw everything
 
 	//Initialize a bunch of Allegro stuff like the display, keyboard, and FPS timer
@@ -75,18 +74,18 @@ int main()
 	al_start_timer(timer);
 
 	//=================================================================================================================
-
+	std::cout << "Initializing World\n";
 	
 	World::SetDisplay(al_get_backbuffer(display));
 	World::Initialize();
-	Player::primaryPlayer = Player::make_player(10, 10);
+	auto primary = Player::make_player(0, 0);
 	int x, y;
-	Player::primaryPlayer->GetPosition(x, y);
+	primary->GetPosition(x, y);
 	Skeleton::makeSkeleton(x+5, y+9);
 	//=================================================================================================================
-
+	std::cout << "Starting main loop\n";
 	//Main loop
-	while (!key[ALLEGRO_KEY_ESCAPE])
+	while (!World::key[ALLEGRO_KEY_ESCAPE])
 	{
 		ALLEGRO_EVENT event;
 
@@ -98,7 +97,6 @@ int main()
 
 			//Player logic
 			World::Update();
-			Player::primaryPlayer->Move(key);
 
 			//Prep the screen for drawing
 			redraw = true;
@@ -111,12 +109,12 @@ int main()
 
 		else if (event.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			key[event.keyboard.keycode] = true;
+			World::key[event.keyboard.keycode] = true;
 		}
 
 		else if (event.type == ALLEGRO_EVENT_KEY_UP)
 		{
-			key[event.keyboard.keycode] = false;
+			World::key[event.keyboard.keycode] = false;
 		}
 
 		if (redraw && al_is_event_queue_empty(event_queue))
@@ -124,9 +122,11 @@ int main()
 			redraw = false;
 			al_set_target_bitmap(al_get_backbuffer(display));
 			al_clear_to_color(al_map_rgb(0, 0, 0));
-			al_use_transform(&Player::primaryPlayer->Get_Transform());
-			World::Draw(*Player::primaryPlayer);
-			Player::primaryPlayer->Draw();
+
+			World::Push_Matrix(primary->Get_Transform());
+			primary->GetPosition(x, y);
+			World::Draw(0,0);
+			World::Pop_Matrix();
 			al_flip_display();
 		}
 	}

@@ -14,7 +14,7 @@ public:
 
 	const std::vector<bool>& Characteristics();
 	void SetCharacteristic(int Characteristic, bool setting);
-	void Draw(int x, int y);
+	void Draw();
 
 	static int RegisterImage(const char TileName[]);	//Searches for the given image and creates an ALLEGRO_BITMAP in the Tiles registry.
 	static int RegisterImage(ALLEGRO_BITMAP *image);	//Assigns the given image to the Tiles registry.

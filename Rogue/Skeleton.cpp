@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "World.h"
 
-Skeleton::Skeleton()
+Skeleton::Skeleton() : Creature("Skeleton")
 {
 	hp = 10;
 	image = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/Skeleton.PNG");
