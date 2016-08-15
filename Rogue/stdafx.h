@@ -13,6 +13,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_color.h>
 #include <allegro5\allegro_image.h>
+#include <allegro5\allegro_audio.h>
+#include <allegro5\allegro_acodec.h>
 #include <vector>
 #include <algorithm>
 #define _USE_MATH_DEFINES
@@ -20,5 +22,7 @@
 #include <stdexcept>
 #include <memory>
 #include <iostream>
+#include <array>
 
 // TODO: reference additional headers your program requires here
+typedef std::pair<int, int> coord;

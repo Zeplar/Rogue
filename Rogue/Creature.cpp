@@ -8,6 +8,13 @@ void Creature::Update()
 	Behavior();
 }
 
+ALLEGRO_BITMAP *Creature::dir_marker = 0;
+
+void Creature::Draw()
+{
+	Entity::Draw();
+}
+
 void Creature::takeDamage(int damage, Player & source)
 {
 	hp -= damage;
@@ -42,14 +49,15 @@ void Creature::MoveTowardTarget()
 	if (!target) return;
 	int x, y;
 	target->GetPosition(x, y);
-	int dx = x - this->x;
-	int dy = y - this->y;
+	int dx = (x > this->x) - (x < this->x);
+	int dy = (y > this->y) - (y < this->y);
 
 	Move(dx, dy);
 }
 
 void Creature::Move(int dx, int dy)
 {
+	SetDirection(dx, dy);
 	Tile& target = World::getTile(x + dx, y + dy);
 	Tile& original = World::getTile(x, y);
 	if (target.Characteristics()[MovementType] && !target.entity)
@@ -58,4 +66,139 @@ void Creature::Move(int dx, int dy)
 		y += dy;
 		target.entity = std::move(original.entity);
 	}
+
+}
+
+class Creature::A_Star
+{
+
+private:
+
+	static int coord_to_index(coord& c, int radius)
+	{
+		return (c.first + radius) * 2 * radius + c.second + radius;
+	}
+
+	static coord index_to_coord(int index, int radius)
+	{
+		return coord(index / radius / 2 - radius, index % (2 * radius) - radius);
+	}
+
+	static std::vector<int> neighbors(int index, int radius)
+	{
+		std::vector<int> ret(8);
+		ret[0] = index - 2 * radius - 1;
+		ret[1] = ret[0] + 1;
+		ret[2] = ret[1] + 1;
+		ret[3] = index - 1;
+		ret[4] = index + 1;
+		ret[5] = index + 2 * radius - 1;
+		ret[6] = ret[5] + 1;
+		ret[7] = ret[6] + 1;
+		return ret;
+	}
+
+	static int distance(coord a, coord b)
+	{
+		return std::max(a.first - b.first, a.second - b.second);
+	}
+
+	static std::unique_ptr<std::vector<coord>> Reconstruct_Path(std::vector<int>& came_from, int current, int radius)
+	{
+		auto ret = std::make_unique<std::vector<coord>>();
+		int start = coord_to_index(coord(0, 0), radius);
+		ret->push_back(index_to_coord(current, radius));
+
+		while (current != start)
+		{
+			ret->push_back(index_to_coord(current, radius));
+			std::cout << ret->back().first << "," << ret->back().second << std::endl;
+			current = came_from[current];
+		}
+		return ret;
+	}
+
+public:
+	static std::unique_ptr<std::vector<coord>> FindPathTo(Creature& self, coord start, coord end, int radius_to_search, Tile::Characteristic movementType)
+	{
+		int size = radius_to_search * radius_to_search * 4;
+		int x, y;
+		coord end_offset = coord(end.first - start.first, end.second - start.second);
+		int end_index = coord_to_index(end_offset, radius_to_search);
+
+		//The set of nodes already evaluated
+		std::vector<int> closed_set;
+
+		//The set of discovered nodes waiting to be evaluated
+		std::vector<int> open_set;
+
+		open_set.push_back(coord_to_index(coord(0,0), radius_to_search));
+
+		//For each node, which node it can most efficiently be reached from.
+		std::vector<int> came_from(size, open_set[0]);
+
+		//For each node, the cost of getting from the start node to that node
+		std::vector<int> gScore(size, INT32_MAX);
+		gScore[open_set[0]] = 0;
+
+		//For each node, the total cost of getting from the start node to the goal by passing by that node.
+		std::vector<int> fScore(size, INT32_MAX);
+		fScore[open_set[0]] = distance(end, start);
+
+
+		while (!open_set.empty())
+		{
+			//current := element of open_set with minimum F value
+			auto c = std::min_element(open_set.begin(), open_set.end(), [&fScore](int node1, int node2) {return fScore[node1] < fScore[node2]; });
+			int current = *c;
+
+			if (current == end_index)
+				return Reconstruct_Path(came_from, current, radius_to_search);
+			
+			open_set.erase(c);
+			closed_set.push_back(current);
+
+			for each (int neighbor in neighbors(current, radius_to_search))
+			{
+				if (neighbor < 0 || neighbor >= 4 * radius_to_search*radius_to_search)
+					continue;	//Ignore out-of-bounds
+				if (std::find(closed_set.begin(), closed_set.end(), neighbor) != closed_set.end())
+					continue;	//Ignore neighbors which have been evaluated
+
+				x = index_to_coord(neighbor, radius_to_search).first + start.first;
+				y = index_to_coord(neighbor, radius_to_search).second + start.second;
+
+				if (!World::getTile(x, y).Characteristics()[movementType])
+				{
+					continue;	//Ignore tiles which are impassable
+				}
+				//Distance from start to neighbor
+
+				int tentative_gScore = gScore[current] + 1;
+				if ((std::find(open_set.begin(), open_set.end(), neighbor) == open_set.end()))
+				{
+					open_set.push_back(neighbor);
+				}
+				else if (tentative_gScore >= gScore[neighbor])
+					continue;
+
+				//This path is the best until now.
+				came_from[neighbor] = current;
+
+				gScore[neighbor] = tentative_gScore;
+
+				fScore[neighbor] = gScore[neighbor] + distance(index_to_coord(neighbor, radius_to_search), end);
+			}
+
+
+		}
+		return nullptr;
+
+
+	}
+};
+
+std::unique_ptr<std::vector<std::pair<int, int>>> Creature::FindPathTo(int x, int y, int radius_to_search)
+{
+	return A_Star::FindPathTo(*this, coord(this->x, this->y), coord(x, y), radius_to_search, MovementType);
 }

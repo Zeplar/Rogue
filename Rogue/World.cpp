@@ -35,6 +35,13 @@ Tile& World::getTile(int x, int y)
 	return *chunks[x / Chunk::size][y / Chunk::size]->data[x % Chunk::size][y % Chunk::size];
 }
 
+Tile& World::getTile(coord& c)
+{
+	int x = c.first;
+	int y = c.second;
+	return getTile(x, y);
+}
+
 void World::Update()
 {
 	for each (Player *p in Player::players)

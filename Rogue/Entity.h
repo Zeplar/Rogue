@@ -6,7 +6,7 @@ friend class World;
 public:
 	Entity();
 	~Entity();
-	void Draw();
+	virtual void Draw();
 	virtual void Behavior() = 0;
 	virtual void Update() = 0;
 	enum Characteristics {Immovable, Passable, Is_Item, Is_Creature};
@@ -24,6 +24,7 @@ protected:
 	int x, y;
 	double getDirection(Direction EntityDirection);
 	void getDirection(int &dx, int &dy);
+	void SetDirection(int &dx, int &dy);
 
 };
 

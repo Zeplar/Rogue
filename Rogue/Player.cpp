@@ -11,21 +11,25 @@ const int TIME_TO_MOVE = 20;
 
 std::vector<Player*> Player::players = std::vector<Player*>();
 Player* Player::primaryPlayer = NULL;
+ALLEGRO_SAMPLE *Player::sound_attack = 0;
+ALLEGRO_SAMPLE *Player::sound_move = 0;
 
 Player::Player()
 {
 	speed = 20;
 	MovementType = Tile::Characteristic::Flyable;
 
-	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/creatures/Player.bmp");
+	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/HumanFighter.PNG");
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
 	al_set_target_bitmap(image);
 	float xs = (float)Tile::TILE_W / al_get_bitmap_width(raw);
 	float ys = (float)Tile::TILE_H / al_get_bitmap_height(raw);
-	al_draw_scaled_rotated_bitmap(raw, al_get_bitmap_width(raw) / 2, al_get_bitmap_height(raw) / 2, Tile::TILE_W / 2, Tile::TILE_H / 2, xs, ys, M_PI, 0);
+	al_draw_scaled_rotated_bitmap(raw, al_get_bitmap_width(raw) / 2, al_get_bitmap_height(raw) / 2, Tile::TILE_W / 2, Tile::TILE_H / 2, 1, 1, 0, 0);
 	al_destroy_bitmap(raw);
 	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
 	al_identity_transform(&camera_transform);
+
+	
 
 }
 
@@ -34,6 +38,7 @@ Player* Player::make_player(int x, int y)
 	Player *p = new Player();
 	p->x = x;
 	p->y = y;
+	p->hp = 100;
 	players.push_back(p);
 	World::GetChunksAroundEntity(*p);
 	World::getTile(x, y).entity = std::unique_ptr<Player>(p);
@@ -52,25 +57,16 @@ void Player::Punch()
 	}
 }
 
-void Player::Behavior() {}
+void Player::Behavior() 
+{
+	if (moveTimer == speed) std::cout << "Player: (" << x << "," << y << ") " << hp << std::endl;
+}
 
 void Player::SetDirection(const std::vector<bool>& key)
 {
-	if (key[ALLEGRO_KEY_UP]) {
-		if (key[ALLEGRO_KEY_LEFT]) direction = Entity::Direction::NW;
-		else if (key[ALLEGRO_KEY_RIGHT]) direction = Entity::Direction::NE;
-		else direction = Entity::Direction::N;
-	}
-	else if (key[ALLEGRO_KEY_DOWN]) {
-		if (key[ALLEGRO_KEY_RIGHT]) direction = Direction::SE;
-		else if (key[ALLEGRO_KEY_LEFT]) direction = Direction::SW;
-		else direction = Direction::S;
-	}
-	else {
-		if (key[ALLEGRO_KEY_LEFT]) direction = Direction::W;
-		else if (key[ALLEGRO_KEY_RIGHT]) direction = Direction::E;
-		else direction = Direction::N;
-	}
+	int dx = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT];
+	int dy = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP];
+	Creature::SetDirection(dx, dy);
 }
 
 void Player::Move(const std::vector<bool>& key)

@@ -4,10 +4,9 @@
 
 #include "stdafx.h"
 #include <time.h>
-#include "Player.h"
 #include "World.h"
 #include <random>
-
+#include "Skeleton.h"
 
 
 int main()
@@ -27,14 +26,25 @@ int main()
 	//=========================================================================================================
 	if (!al_init())
 	{
-		fprintf(stderr, "failed to initialize allegro\n");
+		std::cerr << "failed to initialize allegro\n";
 		return -1;
 	}
 
 	if (!al_install_keyboard()) {
-		fprintf(stderr, "failed to install keyboard\n");
+		std::cerr << "failed to install keyboard\n";
 		return -1;
 	}
+
+	if (!al_install_audio()) {
+		std::cerr << "Failed to installed audio\n";
+		return -1;
+	}
+	if (!al_init_acodec_addon())
+	{
+		std::cerr << "Failed to load audio codecs\n";
+		return -1;
+	}
+
 	al_init_image_addon();
 	al_init_primitives_addon();
 
@@ -70,6 +80,9 @@ int main()
 	World::SetDisplay(al_get_backbuffer(display));
 	World::Initialize();
 	Player::primaryPlayer = Player::make_player(10, 10);
+	int x, y;
+	Player::primaryPlayer->GetPosition(x, y);
+	Skeleton::makeSkeleton(x+5, y+9);
 	//=================================================================================================================
 
 	//Main loop

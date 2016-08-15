@@ -8,10 +8,15 @@ Entity::Entity()
 
 void Entity::Draw()
 {
-	al_draw_rotated_bitmap(image, al_get_bitmap_width(image) / 2, al_get_bitmap_height(image) / 2,
-		x * Tile::TILE_W + Tile::TILE_W / 2,
-		y * Tile::TILE_H + Tile::TILE_H / 2,
-		getDirection(direction) + M_PI, 0);
+	int xpos = Tile::TILE_W * x + (Tile::TILE_W - al_get_bitmap_width(image)) / 2;
+	int ypos = Tile::TILE_H * y + (Tile::TILE_H - al_get_bitmap_height(image)) / 2;
+
+
+	if (al_get_bitmap_width(image) > Tile::TILE_W * 8)
+		al_draw_bitmap_region(image, Tile::TILE_W * direction, 0, Tile::TILE_W, Tile::TILE_H, xpos, ypos, 0);
+	else
+		al_draw_bitmap(image, xpos, ypos, 0);
+
 }
 
 void Entity::SetPosition(int x, int y)
@@ -84,6 +89,26 @@ void Entity::getDirection(int & dx, int & dy)
 			dx = 0;
 			break;
 	}
+}
+
+void Entity::SetDirection(int & dx, int & dy)
+{
+		if (dy < 0) {
+		if (dx > 0) direction = Entity::Direction::NW;
+		else if (dx > 0) direction = Entity::Direction::NE;
+		else direction = Entity::Direction::N;
+	}
+	else if (dy > 0) {
+		if (dx > 0) direction = Direction::SE;
+		else if (dx < 0) direction = Direction::SW;
+		else direction = Direction::S;
+	}
+	else {
+		if (dx < 0) direction = Direction::W;
+		else if (dx > 0) direction = Direction::E;
+		else direction = Direction::N;
+	}
+
 }
 
 Entity::~Entity()

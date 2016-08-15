@@ -4,12 +4,13 @@ class Skeleton :
 	public Creature
 {
 public:
-	Skeleton();
+	static void makeSkeleton(int x, int y);
 	~Skeleton();
+	Skeleton();
+
 
 private:
 	void Behavior();
-
 	void Attack();
 };
 

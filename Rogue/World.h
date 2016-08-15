@@ -29,6 +29,8 @@ public:
 
 	static Tile& getTile(int x, int y);
 
+	static Tile& getTile(coord & c);
+
 	static void Update();
 
 private:
