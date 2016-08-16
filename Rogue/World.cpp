@@ -5,12 +5,15 @@
 using namespace std;
 
 ALLEGRO_BITMAP *World::display = NULL;
-Chunk* World::chunks[WorldSize][WorldSize];
+std::map<coord, Chunk, World::cmpCoord> World::chunks;
 const int RenderDistance = 2;
 ALLEGRO_TRANSFORM World::transforms[16];
 int World::transform_index = 0;
 std::vector<Entity*> World::players;
 std::vector<bool> World::key(ALLEGRO_KEY_MAX, false); //Array indicating which keys were pressed last time we checked
+
+
+
 
 
 //True if the given chunk is outside the chunk array
@@ -64,8 +67,9 @@ void World::SetDisplay(ALLEGRO_BITMAP *display)
 Tile& World::getTile(int x, int y)
 {
 	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk().data[0][0];
-
-	return *chunks[x / Chunk::size][y / Chunk::size]->data[x % Chunk::size][y % Chunk::size];
+	auto& chunk = chunks[coord(x / Chunk::size, y / Chunk::size)];
+	
+	return *chunk.data[x % Chunk::size][y % Chunk::size];
 }
 
 Tile& World::getTile(const coord& c)
@@ -75,6 +79,12 @@ Tile& World::getTile(const coord& c)
 	return getTile(x, y);
 }
 
+Chunk & World::getChunk(int x, int y)
+{
+	if (OutOfBounds(x, y)) return Chunk::Impassable_Chunk();
+	return chunks[coord(x / WorldSize, y % WorldSize)];
+}
+
 void World::Update()
 {
 	int x, y;
@@ -82,10 +92,10 @@ void World::Update()
 	{
 		p->GetPosition(x, y);
 		auto chunks = World::GetChunksAround(x,y);
-		for each (Chunk *c in *chunks)
+		for each (auto c in *chunks)
 		{
-			if (c == &Chunk::Impassable_Chunk()) continue;
-			for each (Tile *t in c->data)
+			if (c.second == &Chunk::Impassable_Chunk()) continue;
+			for each (Tile *t in c.second->data)
 			{
 				if (t->entity)
 				{
@@ -98,21 +108,24 @@ void World::Update()
 
 
 //Generates the chunks RenderDistance radius around the given player, if they have not already been generated.
-std::unique_ptr<std::vector<Chunk*>> World::GetChunksAround(int x, int y)
+std::unique_ptr<std::map<coord, Chunk*, World::cmpCoord>> World::GetChunksAround(int x, int y)
 {
-	auto ret = make_unique<std::vector<Chunk*>>();
-	for (int i = -RenderDistance; i <= RenderDistance; i++)
-		for (int j = -RenderDistance; j <= RenderDistance; j++)
+	auto ret = make_unique<std::map<coord, Chunk*, World::cmpCoord>>();
+	for (int i = (x / Chunk::size) - RenderDistance; i < (x / Chunk::size) + RenderDistance; i++)
+		for (int j = (y / Chunk::size) - RenderDistance; j < (y / Chunk::size) + RenderDistance; j++)
 		{
-			if (OutOfBounds(x / Chunk::size + i, y / Chunk::size + j)) 
-				ret->push_back(&Chunk::Impassable_Chunk());
-			else if (World::chunks[x / Chunk::size + i][y / Chunk::size + j] == NULL)
+			coord chunk(i,j);
+			if (OutOfBounds(chunk.first, chunk.second))
 			{
-				World::chunks[x / Chunk::size + i][y / Chunk::size + j] = Chunk::generateChunk(Chunk::chunk_generate_growth_sample(10, 4));
-				ret->push_back(World::chunks[x / Chunk::size + i][y / Chunk::size + j]);
+				(*ret)[chunk] = (&Chunk::Impassable_Chunk());
+			}
+			else if (World::chunks.find(chunk) == chunks.end())
+			{
+				World::chunks[chunk] = *Chunk::generateChunk(Chunk::chunk_generate_growth_sample(10, 4));
+				(*ret)[chunk] = (&World::chunks[chunk]);
 			}
 			else
-				ret->push_back(World::chunks[x / Chunk::size + i][y / Chunk::size + j]);
+				(*ret)[chunk] = (&World::chunks[chunk]);
 		}
 
 	return ret;
@@ -121,27 +134,18 @@ std::unique_ptr<std::vector<Chunk*>> World::GetChunksAround(int x, int y)
 //Draw the chunks in the render distance around the player
 void World::Draw(int x, int y)
 {
-	GetChunksAround(x, y);
-	int chunk_x = x / Chunk::size;
-	int chunk_y = y / Chunk::size;
+	auto chunks = GetChunksAround(x, y);
 	al_set_target_bitmap(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	ALLEGRO_TRANSFORM temp;
 
-	for (int i= - RenderDistance; i < RenderDistance; i++)
-		for (int j = - RenderDistance; j < RenderDistance; j ++)
-		{
-			if (OutOfBounds(chunk_x + i, chunk_y + j)) continue;
-
-			al_build_transform(&temp, i * Chunk::size * Tile::TILE_W, j * Chunk::size * Tile::TILE_H, 1, 1, 0);
-			Push_Matrix(&temp);
-			if (chunks[chunk_x + i][chunk_y + j] != NULL)
-			{
-				chunks[chunk_x + i][chunk_y + j]->Draw();
-			}
-			else std::cerr << "Null chunk where there shouldn't be\n";
-			Pop_Matrix();
-		}
+	for each (auto c in *chunks)
+	{
+		al_build_transform(&temp, c.first.first * Chunk::size * Tile::TILE_W, c.first.second * Chunk::size * Tile::TILE_H, 1, 1, 0);
+		Push_Matrix(&temp);
+		c.second->Draw();
+		Pop_Matrix();
+	}
 }
 
 void World::Initialize()
@@ -158,7 +162,6 @@ void World::RegisterPlayer(Entity *p)
 	p->GetPosition(x, y);
 	World::GetChunksAround(x,y);
 	World::getTile(x,y).entity = std::unique_ptr<Entity>(p);
-	std::cout << "Playername: " << World::getTile(x, y).entity->name << std::endl;
 }
 
 void World::UnregisterPlayer(Entity *p) {

@@ -12,6 +12,7 @@ public:
 
 	const ALLEGRO_TRANSFORM* Get_Transform() const;
 	void Behavior();
+	void Draw();
 	static Player *make_player(int x, int y);
 
 private:

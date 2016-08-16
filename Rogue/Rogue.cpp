@@ -125,7 +125,7 @@ int main()
 
 			World::Push_Matrix(primary->Get_Transform());
 			primary->GetPosition(x, y);
-			World::Draw(0,0);
+			World::Draw(x,y);
 			World::Pop_Matrix();
 			al_flip_display();
 		}

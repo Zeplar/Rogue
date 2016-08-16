@@ -1,15 +1,20 @@
 #pragma once
 //Stores all of the code related to updating the terrain
 
-#include <list>
 #include "stdafx.h"
-#include <time.h>
 #include "Tile.h"
 #include "Chunk.h"
-#include <random>
+#include <map>
 
 class World
 {
+private:
+	struct cmpCoord {
+		bool operator()(const coord& a, const coord& b) const {
+			return a.first < b.first ? true : a.first == b.first && a.second < b.second ? true : false;
+		}
+	};
+
 public:
 	static const int WorldSize = 128;
 
@@ -19,7 +24,7 @@ public:
 
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
-	static std::unique_ptr<std::vector<Chunk*>> GetChunksAround(int x, int y);
+	static std::unique_ptr<std::map<coord,Chunk*,World::cmpCoord>> GetChunksAround(int x, int y);
 
 	static void Draw(int x, int y);
 
@@ -30,6 +35,8 @@ public:
 	static Tile& getTile(int x, int y);
 
 	static Tile& getTile(const coord & c);
+
+	static Chunk& getChunk(int x, int y);
 
 	static void Update();
 
@@ -43,11 +50,15 @@ public:
 	static void UnregisterPlayer(Entity *p);
 
 private:
-	static Chunk* chunks[WorldSize][WorldSize];
+
+
+	static std::map<coord, Chunk, cmpCoord> chunks;
 	static ALLEGRO_BITMAP *display;
 	static ALLEGRO_TRANSFORM transforms[16];
 	static int transform_index;
 	static std::vector<Entity*> players;
+
+
 
 };
 

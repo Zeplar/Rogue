@@ -51,7 +51,6 @@ void Skeleton::Behavior()
 			int dy = path->back().second;
 			Move(dx, dy);
 			SetDirection(dx, dy);
-			//MoveTowardTarget();
 			Attack();
 		}
 	}

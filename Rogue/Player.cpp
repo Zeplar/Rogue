@@ -66,7 +66,6 @@ void Player::SetDirection(const std::vector<bool>& key)
 void Player::Move(const std::vector<bool>& key)
 {
 	int dx, dy;
-	Transform_Camera();
 
 	if (moveTimer >= speed)
 	{
@@ -80,13 +79,21 @@ void Player::Move(const std::vector<bool>& key)
 
 }
 
+void Player::Draw()
+{
+	Creature::Draw();
+	Transform_Camera();
+}
+
 void Player::Transform_Camera()
 {
-	float x = Player::x * Tile::TILE_W; float y = Player::y * Tile::TILE_H;		//Screen x,y coordinates
 	float w = al_get_display_width(al_get_current_display());		//Screen width
 	float h = al_get_display_height(al_get_current_display());		//Screen height
+	float x = this->x;
+	float y = this->y;
 
-	al_transform_coordinates(&camera_transform, &x, &y);
+
+	al_transform_coordinates(al_get_current_transform(), &x, &y);
 	if (x < .33*w || x > .66*w) al_translate_transform(&camera_transform, (.5*w - x) * 0.01, 0);
 	if (y < .33*h || y > .66*h) al_translate_transform(&camera_transform, 0, (.5*h - y)*0.01);
 
