@@ -43,13 +43,14 @@ void Creature::Find_Target_Player(int range)
 	if (!(target && IsInRange(*target, range) && dynamic_cast<Player*>(target)))
 	{
 		auto chunks = World::GetChunksAround(x, y);
-		for each (Chunk *c in *chunks)
-			for each (Tile *t in c->data)
+		for each (auto c in *chunks)
+			for each (Tile *t in c.second->data)
 				if (t->entity && dynamic_cast<Player*>(t->entity.get()) && IsInRange(*t->entity, range))
 				{
 					target = t->entity.get();
 					return;
 				}
+		target = nullptr;
 	}
 }
 
@@ -64,6 +65,7 @@ void Creature::MoveTowardTarget()
 	Move(dx, dy);
 }
 
+//Attempt to move in the given direction
 void Creature::Move(int dx, int dy)
 {
 	SetDirection(dx, dy);
