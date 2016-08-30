@@ -1,4 +1,6 @@
 #pragma once
+#include "Entity.h"
+
 class GUI
 {
 public:
@@ -24,9 +26,11 @@ public:
 	class DirectionArrow
 	{
 	public:
-		DirectionArrow(const int& direction, const int& x, const int& y);
+		DirectionArrow(const Entity::Direction& direction);
 		~DirectionArrow();
 		void Draw();
+	private:
+		const Entity::Direction& direction;
 	};
 };
 

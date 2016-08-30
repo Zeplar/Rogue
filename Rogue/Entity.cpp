@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Entity.h"
 #include "Tile.h"
+#include "World.h"
 
 Entity::Entity(std::string name)
 {
@@ -18,6 +19,13 @@ void Entity::Draw()
 	else
 		al_draw_bitmap(image, 0, 0, 0);
 
+	//al_draw_rectangle(0, 0, Tile::TILE_W, Tile::TILE_H, al_color_name("red"), 2);
+
+}
+
+Tile & Entity::getTile()
+{
+	return World::getTile(x, y);
 }
 
 void Entity::SetPosition(int x, int y)
@@ -94,20 +102,22 @@ void Entity::getDirection(int & dx, int & dy)
 
 void Entity::SetDirection(int & dx, int & dy)
 {
-		if (dy < 0) {
-		if (dx > 0) direction = Entity::Direction::NW;
-		else if (dx > 0) direction = Entity::Direction::NE;
+	if (dy < 0) 
+	{
+		if (dx > 0) direction = Entity::Direction::NE;
+		else if (dx < 0) direction = Entity::Direction::NW;
 		else direction = Entity::Direction::N;
 	}
-	else if (dy > 0) {
+	else if (dy > 0) 
+	{
 		if (dx > 0) direction = Direction::SE;
 		else if (dx < 0) direction = Direction::SW;
 		else direction = Direction::S;
 	}
-	else {
+	else 
+	{
 		if (dx < 0) direction = Direction::W;
 		else if (dx > 0) direction = Direction::E;
-		else direction = Direction::N;
 	}
 
 }

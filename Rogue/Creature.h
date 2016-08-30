@@ -8,7 +8,7 @@ class Creature : public Entity
 {
 public:
 
-	Tile::Characteristic MovementType;	//While all characteristics are valid, you should probably choose a movement characteristic.
+	Tile::Characteristic movementType;	//While all characteristics are valid, you should probably choose a movement characteristic.
 	int hp, mp;
 	float speed;
 	enum Characteristics {Hostile};
@@ -25,7 +25,7 @@ protected:
 
 	friend class World;
 
-	void Find_Target_Player(int range);
+	Entity* Find_Target_Player(int range);
 	void MoveTowardTarget();
 	void Move(int dx, int dy);
 	std::unique_ptr<std::vector<std::pair<int, int>>> FindPathTo(int x, int y, int radius_to_search);

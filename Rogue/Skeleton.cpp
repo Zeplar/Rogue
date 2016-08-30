@@ -6,11 +6,16 @@
 Skeleton::Skeleton() : Creature("Skeleton")
 {
 	hp = 10;
-	image = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/Skeleton.PNG");
-	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
-	if (!image) std::cerr << "Failed to load Skeleton.PNG" << std::endl;
+	auto raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/Skeleton.PNG");
+	al_convert_mask_to_alpha(raw, al_map_rgb(255, 0, 255));
+
+	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
+	al_set_target_bitmap(image);
+
+	al_draw_bitmap(raw, -11, -13, 0);
+	al_destroy_bitmap(raw);
 	speed = 40;
-	MovementType = Tile::Characteristic::Walkable;
+	movementType = Tile::Characteristic::Walkable;
 
 
 	if (!al_reserve_samples(10)) std::cerr << "Failed to reserve audio samples\n";
@@ -34,29 +39,31 @@ Skeleton::~Skeleton()
 {
 }
 
+
 void Skeleton::Behavior()
 {
-	int x, y;
+	static coord tile_target;
 	if (moveTimer < speed) return;
 
 	moveTimer = 0;
 	
-	Find_Target_Player(10);
-	if (target)
+	if (!target) target = Find_Target_Player(10);
+	if (target && target->getTile().Characteristics()[movementType])
+		target->GetPosition(tile_target.first, tile_target.second);
+
+	if (auto path = FindPathTo(tile_target.first, tile_target.second, 10))
 	{
-		target->GetPosition(x, y);
-		if (auto path = FindPathTo(x, y, 20))
-		{
-			int dx = path->back().first;
-			int dy = path->back().second;
-			Move(dx, dy);
-			SetDirection(dx, dy);
-			Attack();
-		}
+		int dx = path->back().first;
+		int dy = path->back().second;
+		Move(dx, dy);
+		SetDirection(dx, dy);
+		Attack();
 	}
-	else
+
+	if (x == tile_target.first && y == tile_target.second)
 	{
-		Move(1 - rand() % 3, 1 - rand() % 3);
+		tile_target.first += std::rand() % 10 - 5;
+		tile_target.second += std::rand() % 10 - 5;
 	}
 }
 

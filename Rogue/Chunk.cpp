@@ -29,20 +29,18 @@ void Chunk::Draw()
 		}
 }
 
-Chunk* Chunk::generateChunk(std::vector<int>* sample)
+Chunk::Chunk(std::vector<int>* sample)
 {
-	Chunk *chunk = new Chunk();
 	for (int i = 0; i < Chunk::size; i++)
 		for (int j = 0; j < Chunk::size; j++)
 		{
 			if (sample->at(i*Chunk::size + j))
 			{
-				chunk->data[i][j] = new Forest_Tree();
+				data[i][j] = new Forest_Tree();
 			}
 			else
-				chunk->data[i][j] = new Forest_Floor();
+				data[i][j] = new Forest_Floor();
 		}
-	return chunk;
 }
 
 
@@ -120,7 +118,7 @@ std::vector<int> * Chunk::chunk_generate_cell_sample(int minimum, int optimal, i
 
 Chunk *Chunk::_impassable;
 
-Chunk& Chunk::Impassable_Chunk()
+Chunk* Chunk::Impassable_Chunk()
 {
 	if (!_impassable) {
 		_impassable = new Chunk();
@@ -131,5 +129,5 @@ Chunk& Chunk::Impassable_Chunk()
 				_impassable->data[i][j] = filler;
 	}
 
-	return *_impassable;
+	return _impassable;
 }

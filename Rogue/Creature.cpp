@@ -38,20 +38,16 @@ bool Creature::IsInRange(const Entity& entity, int range)
 }
 
 
-void Creature::Find_Target_Player(int range)
+Entity* Creature::Find_Target_Player(int range)
 {
-	if (!(target && IsInRange(*target, range) && dynamic_cast<Player*>(target)))
-	{
-		auto chunks = World::GetChunksAround(x, y);
-		for each (auto c in *chunks)
-			for each (Tile *t in c.second->data)
-				if (t->entity && dynamic_cast<Player*>(t->entity.get()) && IsInRange(*t->entity, range))
-				{
-					target = t->entity.get();
-					return;
-				}
-		target = nullptr;
-	}
+	auto chunks = World::GetChunksAround(x, y);
+	for each (auto c in *chunks)
+		for each (Tile *t in c.second->data)
+			if (t->entity && dynamic_cast<Player*>(t->entity.get()) && IsInRange(*t->entity, range))
+			{
+				return &*t->entity;
+			}
+	return nullptr;
 }
 
 void Creature::MoveTowardTarget()
@@ -71,7 +67,7 @@ void Creature::Move(int dx, int dy)
 	SetDirection(dx, dy);
 	Tile& target = World::getTile(x + dx, y + dy);
 	Tile& original = World::getTile(x, y);
-	if (target.Characteristics()[MovementType] && !target.entity)
+	if (target.Characteristics()[movementType] && !target.entity)
 	{
 		x += dx;
 		y += dy;
@@ -155,6 +151,7 @@ public:
 		std::vector<int> fScore(size, INT32_MAX);
 		fScore[open_set[0]] = distance(end, start);
 
+		if (!World::getTile(end.first, end.second).Characteristics()[movementType]) return 0;
 
 		while (!open_set.empty())
 		{
@@ -196,13 +193,13 @@ public:
 				came_from[neighbor] = current;
 
 				gScore[neighbor] = tentative_gScore;
-
-				fScore[neighbor] = gScore[neighbor] + distance(index_to_coord(neighbor, radius_to_search), end);
+				coord nghbr = index_to_coord(neighbor, radius_to_search);
+				fScore[neighbor] = gScore[neighbor] + distance(nghbr, end);
 			}
 
 
 		}
-		return nullptr;
+		return 0;
 
 
 	}
@@ -210,5 +207,5 @@ public:
 
 std::unique_ptr<std::vector<std::pair<int, int>>> Creature::FindPathTo(int x, int y, int radius_to_search)
 {
-	return A_Star::FindPathTo(*this, coord(this->x, this->y), coord(x, y), radius_to_search, MovementType);
+	return A_Star::FindPathTo(*this, coord(this->x, this->y), coord(x, y), radius_to_search, movementType);
 }

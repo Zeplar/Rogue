@@ -1,4 +1,6 @@
 #pragma once
+
+class Tile;
 class Entity
 {
 
@@ -17,14 +19,14 @@ public:
 	void GetPosition(int& x, int& y) const;
 	std::string name;
 
-
+	static double getDirection(Direction EntityDirection);
+	Tile& getTile();
 
 protected:
 
 	ALLEGRO_BITMAP *image;
 	Direction direction; //direction enum
 	int x, y;
-	double getDirection(Direction EntityDirection);
 	void getDirection(int &dx, int &dy);
 	void SetDirection(int &dx, int &dy);
 
