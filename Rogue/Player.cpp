@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "World.h"
+#include "GUI.h"
 #include <algorithm>
 
 
@@ -13,7 +14,7 @@ const int TIME_TO_MOVE = 20;
 Player::Player() : Creature("Player")
 {
 	speed = 20;
-	MovementType = Tile::Characteristic::Flyable;
+	movementType = Tile::Characteristic::Flyable;
 
 	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/HumanFighter.PNG");
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
@@ -24,9 +25,6 @@ Player::Player() : Creature("Player")
 	al_destroy_bitmap(raw);
 	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
 	al_identity_transform(&camera_transform);
-
-	
-
 }
 
 Player* Player::make_player(int x, int y)
@@ -53,6 +51,7 @@ void Player::Punch()
 
 void Player::Behavior() 
 {
+	SetDirection(World::key);
 	Move(World::key);
 }
 
@@ -65,15 +64,12 @@ void Player::SetDirection(const std::vector<bool>& key)
 
 void Player::Move(const std::vector<bool>& key)
 {
-	int dx, dy;
+	int dx = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT];
+	int dy = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP];
 
 	if (moveTimer >= speed)
 	{
 		moveTimer = 0;
-		SetDirection(key);
-		dx = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT];
-		dy = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP];
-
 		Creature::Move(dx, dy);
 	}
 
@@ -82,6 +78,7 @@ void Player::Move(const std::vector<bool>& key)
 void Player::Draw()
 {
 	Creature::Draw();
+	GUI::DirectionArrow(direction).Draw();
 	Transform_Camera();
 }
 

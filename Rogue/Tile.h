@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "Entity.h"
 
+//Individual tiles contain information about moveability and entities present on that tile
+//At present it's assumed that no more than one entity can occupy a single tile
 class Tile
 {
 	friend class World;

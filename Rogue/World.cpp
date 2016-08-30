@@ -5,7 +5,7 @@
 using namespace std;
 
 ALLEGRO_BITMAP *World::display = NULL;
-std::map<coord, Chunk, World::cmpCoord> World::chunks;
+std::map<coord, Chunk*, World::cmpCoord> World::chunks;
 const int RenderDistance = 2;
 ALLEGRO_TRANSFORM World::transforms[16];
 int World::transform_index = 0;
@@ -66,10 +66,10 @@ void World::SetDisplay(ALLEGRO_BITMAP *display)
 //Returns the tile at the given coordinate
 Tile& World::getTile(int x, int y)
 {
-	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk().data[0][0];
+	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk()->data[0][0];
 	auto& chunk = chunks[coord(x / Chunk::size, y / Chunk::size)];
 	
-	return *chunk.data[x % Chunk::size][y % Chunk::size];
+	return *chunk->data[x % Chunk::size][y % Chunk::size];
 }
 
 Tile& World::getTile(const coord& c)
@@ -79,10 +79,10 @@ Tile& World::getTile(const coord& c)
 	return getTile(x, y);
 }
 
-Chunk & World::getChunk(int x, int y)
+Chunk& World::getChunk(int x, int y)
 {
-	if (OutOfBounds(x, y)) return Chunk::Impassable_Chunk();
-	return chunks[coord(x / WorldSize, y % WorldSize)];
+	if (OutOfBounds(x, y)) return *Chunk::Impassable_Chunk();
+	return *chunks[coord(x / WorldSize, y % WorldSize)];
 }
 
 void World::Update()
@@ -94,7 +94,7 @@ void World::Update()
 		auto chunks = World::GetChunksAround(x,y);
 		for each (auto c in *chunks)
 		{
-			if (c.second == &Chunk::Impassable_Chunk()) continue;
+			if (c.second == Chunk::Impassable_Chunk()) continue;
 			for each (Tile *t in c.second->data)
 			{
 				if (t->entity)
@@ -117,15 +117,15 @@ std::unique_ptr<std::map<coord, Chunk*, World::cmpCoord>> World::GetChunksAround
 			coord chunk(i,j);
 			if (OutOfBounds(chunk.first, chunk.second))
 			{
-				(*ret)[chunk] = (&Chunk::Impassable_Chunk());
+				(*ret)[chunk] = (Chunk::Impassable_Chunk());
 			}
 			else if (World::chunks.find(chunk) == chunks.end())
 			{
-				World::chunks[chunk] = *Chunk::generateChunk(Chunk::chunk_generate_growth_sample(10, 4));
-				(*ret)[chunk] = (&World::chunks[chunk]);
+				World::chunks[chunk] = new Chunk(Chunk::chunk_generate_growth_sample(10, 4));
+				(*ret)[chunk] = (World::chunks[chunk]);
 			}
 			else
-				(*ret)[chunk] = (&World::chunks[chunk]);
+				(*ret)[chunk] = (World::chunks[chunk]);
 		}
 
 	return ret;
@@ -138,7 +138,7 @@ void World::Draw(int x, int y)
 	al_set_target_bitmap(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	ALLEGRO_TRANSFORM temp;
-
+	int ex, ey;
 	for each (auto c in *chunks)
 	{
 		al_build_transform(&temp, c.first.first * Chunk::size * Tile::TILE_W, c.first.second * Chunk::size * Tile::TILE_H, 1, 1, 0);
@@ -146,6 +146,19 @@ void World::Draw(int x, int y)
 		c.second->Draw();
 		Pop_Matrix();
 	}
+
+	for each (auto c in *chunks)
+		for each (Tile *t in c.second->data)
+		{
+			if (t->entity)
+			{
+				t->entity->GetPosition(ex, ey);
+				al_build_transform(&temp, ex * Tile::TILE_W, ey * Tile::TILE_H, 1, 1, 0);
+				Push_Matrix(&temp);
+				t->entity->Draw();
+				Pop_Matrix();
+			}
+		}
 }
 
 void World::Initialize()

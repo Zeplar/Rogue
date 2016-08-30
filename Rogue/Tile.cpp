@@ -36,10 +36,6 @@ void Tile::Draw()
 		return;
 	}
 	al_draw_bitmap(Tile::AllTiles[TileID], 0, 0, 0);
-	if (entity)
-	{
-		entity->Draw();
-	}
 }
 
 int Tile::RegisterImage(const char TileName[])

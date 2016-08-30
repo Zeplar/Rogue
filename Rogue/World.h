@@ -1,11 +1,12 @@
 #pragma once
-//Stores all of the code related to updating the terrain
 
 #include "stdafx.h"
 #include "Tile.h"
 #include "Chunk.h"
 #include <map>
 
+
+//Stores all of the code related to updating the terrain
 class World
 {
 private:
@@ -52,7 +53,7 @@ public:
 private:
 
 
-	static std::map<coord, Chunk, cmpCoord> chunks;
+	static std::map<coord, Chunk*, cmpCoord> chunks;
 	static ALLEGRO_BITMAP *display;
 	static ALLEGRO_TRANSFORM transforms[16];
 	static int transform_index;
