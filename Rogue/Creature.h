@@ -1,9 +1,12 @@
 #pragma once
 #include "Entity.h"
 #include "Tile.h"
+#include "GUI.h"
 class World;
 class Player;
 
+//Base class for entities that move and have hitpoints
+//There's currently no explicit difference between a creature and an item
 class Creature : public Entity
 {
 public:
@@ -37,8 +40,8 @@ protected:
 	virtual void Die();
 	Creature(std::string name);
 
+
 private:
 	class A_Star;
-	static ALLEGRO_BITMAP *dir_marker;
 };
 

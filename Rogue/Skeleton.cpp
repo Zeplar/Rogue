@@ -11,9 +11,10 @@ Skeleton::Skeleton() : Creature("Skeleton")
 
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
 	al_set_target_bitmap(image);
-
 	al_draw_bitmap(raw, -11, -13, 0);
 	al_destroy_bitmap(raw);
+	drawable_components.push_back(new GUI::Avatar(image));
+
 	speed = 40;
 	movementType = Tile::Characteristic::Walkable;
 

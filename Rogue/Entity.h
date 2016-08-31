@@ -1,7 +1,9 @@
 #pragma once
-
+#include "Drawable.h"
 class Tile;
-class Entity
+
+//Base class for pretty much anything permanent that isn't a tile
+class Entity : public GUI::Drawable
 {
 
 public:
@@ -29,7 +31,7 @@ protected:
 	int x, y;
 	void getDirection(int &dx, int &dy);
 	void SetDirection(int &dx, int &dy);
-
+	std::vector<GUI::Drawable*> drawable_components;
 
 };
 

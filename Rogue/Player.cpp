@@ -25,6 +25,10 @@ Player::Player() : Creature("Player")
 	al_destroy_bitmap(raw);
 	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
 	al_identity_transform(&camera_transform);
+
+	//Register the GUI components
+	drawable_components.push_back(new GUI::Avatar(image));
+	drawable_components.push_back(new GUI::DirectionArrow(direction));
 }
 
 Player* Player::make_player(int x, int y)
@@ -78,7 +82,6 @@ void Player::Move(const std::vector<bool>& key)
 void Player::Draw()
 {
 	Creature::Draw();
-	GUI::DirectionArrow(direction).Draw();
 	Transform_Camera();
 }
 
