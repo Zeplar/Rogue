@@ -17,7 +17,6 @@ void GUI::StatusBar::Draw()
 	al_build_transform(&temp, 0, -Tile::TILE_W / 4, 1, 1, 0);
 	World::Push_Matrix(&temp);
 	int length = (30 * var) / 100;
-	std::cout << "(30 * " << var << ") / " << max << " = " << length << std::endl;
 	al_draw_filled_rectangle(0, 0, length, 8, color);
 	al_draw_rectangle(0, 0, Tile::TILE_W, 8, al_color_name("white"), 1);
 

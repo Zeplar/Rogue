@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Chunk.h"
-#include "Forest_Tree.h"
-#include "Forest_Floor.h"
 #include "World.h"
 
 Chunk::Chunk()
@@ -36,10 +34,10 @@ Chunk::Chunk(std::vector<int>* sample)
 		{
 			if (sample->at(i*Chunk::size + j))
 			{
-				data[i][j] = new Forest_Tree();
+				data[i][j] = new Tile(Tile::baseTiles[1]);
 			}
 			else
-				data[i][j] = new Forest_Floor();
+				data[i][j] = new Tile(Tile::baseTiles[0]);
 		}
 }
 
@@ -122,11 +120,9 @@ Chunk* Chunk::Impassable_Chunk()
 {
 	if (!_impassable) {
 		_impassable = new Chunk();
-		Forest_Tree* filler = new Forest_Tree();
-		filler->SetCharacteristic(Tile::Characteristic::Flyable, false);
 		for (int i = 0; i < 16; i++)
 			for (int j = 0; j < 16; j++)
-				_impassable->data[i][j] = filler;
+				_impassable->data[i][j] = Tile::impassable_tile;
 	}
 
 	return _impassable;

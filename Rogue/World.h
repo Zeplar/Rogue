@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include "Chunk.h"
 #include <map>
+#include <allegro5\events.h>
 
 
 //Stores all of the code related to updating the terrain
@@ -25,6 +26,8 @@ public:
 
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
+	static void setTile(const coord & c, Tile * t);
+
 	static std::unique_ptr<std::map<coord,Chunk*,World::cmpCoord>> GetChunksAround(int x, int y);
 
 	static void Draw(int x, int y);
@@ -45,6 +48,9 @@ public:
 	static bool Pop_Matrix();
 
 	static std::vector<bool> key; //Array indicating which keys were pressed last time we checked
+
+	static std::tuple<bool,int, int> mouseEvent;	//First entry indicates a new event, next two entries are x,
+	static std::tuple<bool, int, int> mouseDown;
 
 	static void RegisterPlayer(Entity * p);
 

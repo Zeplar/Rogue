@@ -11,7 +11,8 @@ ALLEGRO_TRANSFORM World::transforms[16];
 int World::transform_index = 0;
 std::vector<Entity*> World::players;
 std::vector<bool> World::key(ALLEGRO_KEY_MAX, false); //Array indicating which keys were pressed last time we checked
-
+std::tuple<bool, int, int> World::mouseEvent;
+std::tuple<bool, int, int> World::mouseDown;
 
 
 
@@ -63,6 +64,15 @@ void World::SetDisplay(ALLEGRO_BITMAP *display)
 	World::display = display;
 }
 
+void World::setTile(const coord& c, Tile* t)
+{
+	if (TileOutOfBounds(c.first, c.second)) return;
+	auto& chunk = chunks[coord(c.first / Chunk::size, c.second / Chunk::size)];
+	auto& tile = chunk->data[c.first % Chunk::size][c.second % Chunk::size];
+	t->entity.swap(tile->entity);
+	tile = t;
+}
+
 //Returns the tile at the given coordinate
 Tile& World::getTile(int x, int y)
 {
@@ -87,7 +97,10 @@ Chunk& World::getChunk(int x, int y)
 
 void World::Update()
 {
+	static int selectedTile;
 	int x, y;
+	int index = 0;
+	
 	for each (Entity *p in players)
 	{
 		p->GetPosition(x, y);
@@ -131,9 +144,12 @@ std::unique_ptr<std::map<coord, Chunk*, World::cmpCoord>> World::GetChunksAround
 	return ret;
 }
 
+
+
 //Draw the chunks in the render distance around the player
 void World::Draw(int x, int y)
 {
+	int counts = 0;
 	auto chunks = GetChunksAround(x, y);
 	al_set_target_bitmap(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -150,6 +166,7 @@ void World::Draw(int x, int y)
 	for each (auto c in *chunks)
 		for each (Tile *t in c.second->data)
 		{
+			if (t->selected) counts++;
 			if (t->entity)
 			{
 				t->entity->GetPosition(ex, ey);
@@ -163,18 +180,25 @@ void World::Draw(int x, int y)
 
 void World::Initialize()
 {
-	Forest_Floor::Forest_Floor().RegisterImage();
-	Forest_Tree::Forest_Tree().RegisterImage();
 	al_identity_transform(&transforms[0]);
+	Tile::loadTiles();
 }
 
 void World::RegisterPlayer(Entity *p)
 {
-	int x, y;
-	players.push_back(p);
-	p->GetPosition(x, y);
-	World::GetChunksAround(x,y);
-	World::getTile(x,y).entity = std::unique_ptr<Entity>(p);
+	try
+	{
+		int x, y;
+		players.push_back(p);
+		p->GetPosition(x, y);
+		World::GetChunksAround(x, y);
+		World::getTile(x, y).entity = std::unique_ptr<Entity>(p);
+	}
+	catch (const std::exception e)
+	{
+		std::cout << "Error registering player\n";
+		throw e;
+	}
 }
 
 void World::UnregisterPlayer(Entity *p) {

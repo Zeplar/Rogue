@@ -6,7 +6,7 @@
 Skeleton::Skeleton() : Creature("Skeleton")
 {
 	hp = 10;
-	auto raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/Skeleton.PNG");
+	auto raw = al_load_bitmap("C:/Users/Joshua/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/Skeleton.PNG");
 	al_convert_mask_to_alpha(raw, al_map_rgb(255, 0, 255));
 
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
@@ -20,7 +20,7 @@ Skeleton::Skeleton() : Creature("Skeleton")
 
 
 	if (!al_reserve_samples(10)) std::cerr << "Failed to reserve audio samples\n";
-	sound_attack = al_load_sample("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Audio/sword_1.WAV");
+	sound_attack = al_load_sample("C:/Users/Joshua/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Audio/sword_1.WAV");
 	if (!sound_attack) std::cerr << "Failed to load audio file\n";
 }
 
