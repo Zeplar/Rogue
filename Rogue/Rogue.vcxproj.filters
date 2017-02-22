@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Tiles">
-      <UniqueIdentifier>{9ccddf0f-6237-4c97-83b7-ba8e5ca7c528}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Tiles">
-      <UniqueIdentifier>{bdf1fbd0-92f5-4690-b19a-d2626e5fe666}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Creatures">
       <UniqueIdentifier>{85351ae5-1149-4ec8-937e-ec6de292031e}</UniqueIdentifier>
     </Filter>
@@ -48,12 +42,6 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Forest_Floor.h">
-      <Filter>Header Files\Tiles</Filter>
-    </ClInclude>
-    <ClInclude Include="Forest_Tree.h">
-      <Filter>Header Files\Tiles</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,10 +57,25 @@
     <ClInclude Include="Skeleton.h">
       <Filter>Header Files\Creatures</Filter>
     </ClInclude>
-    <ClInclude Include="Tiles.h">
-      <Filter>Header Files\Tiles</Filter>
-    </ClInclude>
     <ClInclude Include="GUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rogue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,12 +98,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Forest_Floor.cpp">
-      <Filter>Source Files\Tiles</Filter>
-    </ClCompile>
-    <ClCompile Include="Forest_Tree.cpp">
-      <Filter>Source Files\Tiles</Filter>
-    </ClCompile>
     <ClCompile Include="Creature.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,6 +111,18 @@
       <Filter>Source Files\Creatures</Filter>
     </ClCompile>
     <ClCompile Include="GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

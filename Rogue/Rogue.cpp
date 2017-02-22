@@ -1,14 +1,14 @@
 // Rogue.cpp : Defines the entry point for the console application.
 //
 
-
 #include "stdafx.h"
 #include <time.h>
 #include "World.h"
 #include <random>
 #include "Skeleton.h"
 #include "Player.h"
-
+#include "Camera.h"
+#include "Rogue.h"
 
 int main()
 {
@@ -34,6 +34,11 @@ int main()
 		return -1;
 	}
 
+	if (!al_install_mouse()) {
+		std::cerr << "failed to install mouse\n";
+		return -1;
+	}
+
 	if (!al_install_audio()) {
 		std::cerr << "Failed to installed audio\n";
 		return -1;
@@ -46,6 +51,8 @@ int main()
 
 	al_init_image_addon();
 	al_init_primitives_addon();
+	al_init_font_addon();
+	al_init_ttf_addon();
 
 	al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
 	al_set_new_display_option(ALLEGRO_SAMPLES, 4, ALLEGRO_SUGGEST);
@@ -70,6 +77,7 @@ int main()
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_mouse_event_source());
 
 	al_start_timer(timer);
 
@@ -117,6 +125,17 @@ int main()
 			World::key[event.keyboard.keycode] = false;
 		}
 
+		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+		{
+			World::mouseDown = std::tuple<bool, int, int>(true, event.mouse.x, event.mouse.y);
+		}
+
+		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+		{
+			World::mouseEvent = std::tuple<bool, int, int>(true, event.mouse.x, event.mouse.y);
+			std::get<0>(World::mouseDown) = false;
+		}
+
 		if (redraw && al_is_event_queue_empty(event_queue))
 		{
 			redraw = false;
@@ -127,6 +146,7 @@ int main()
 			primary->GetPosition(x, y);
 			World::Draw(x,y);
 			World::Pop_Matrix();
+			Camera::drawScreen();
 			al_flip_display();
 		}
 	}

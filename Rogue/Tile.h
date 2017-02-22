@@ -10,6 +10,10 @@ class Tile
 
 
 public:
+	static void addNote(coord & tile, std::string note);
+	static std::vector<std::string> getNotes(coord & tile);
+	Tile(ALLEGRO_BITMAP* raw);
+	Tile(const Tile& t);
 	Tile();
 	~Tile();
 	enum Characteristic { Walkable, Flyable, Swimmable, SpawnsEnemies };
@@ -18,19 +22,26 @@ public:
 	void SetCharacteristic(int Characteristic, bool setting);
 	void Draw();
 
-	static int RegisterImage(const char TileName[]);	//Searches for the given image and creates an ALLEGRO_BITMAP in the Tiles registry.
-	static int RegisterImage(ALLEGRO_BITMAP *image);	//Assigns the given image to the Tiles registry.
+	static void select(coord t);
+
+	static void loadTiles();
 
 	static const int TILE_W = 30;
 	static const int TILE_H = 30;
 	std::unique_ptr<Entity> entity;
+	static std::vector<coord> currentlySelected;
 
+	bool selected;
+
+	static std::vector<Tile> baseTiles;
+	static std::vector<ALLEGRO_BITMAP*> AllTiles;
+
+	static Tile* impassable_tile;
+
+	static std::map<coord, std::vector<std::string>> notes;
 
 protected:
-	static std::vector<ALLEGRO_BITMAP*> AllTiles;
-	virtual int RegisterImage() = 0;	//Should call exactly one of the predefined RegisterImage() commands to add an image to the Tiles registry and receive an ID.
-	static int numTiles;
-	int TileID;
+	int id;
 	std::vector<bool> characteristics;
 };
 

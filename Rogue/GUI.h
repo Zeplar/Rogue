@@ -1,15 +1,21 @@
 #pragma once
 #include "Entity.h"
+#include "Drawable.h"
 
-class GUI
+namespace GUI
 {
-public:
-	GUI();
-	~GUI();
 
-	virtual void Draw() = 0;
+	class Avatar : public Drawable
+	{
+	public:
+		Avatar(ALLEGRO_BITMAP *image);
+		~Avatar();
+		void Draw();
+	private:
+		ALLEGRO_BITMAP *image;
+	};
 
-	class StatusBar
+	class StatusBar : public Drawable
 	{
 	public:
 		StatusBar(const int& x, const int& y, const int& var, const int&max_value, ALLEGRO_COLOR color);
@@ -23,7 +29,7 @@ public:
 		ALLEGRO_COLOR color;
 	};
 
-	class DirectionArrow
+	class DirectionArrow : public Drawable
 	{
 	public:
 		DirectionArrow(const Entity::Direction& direction);

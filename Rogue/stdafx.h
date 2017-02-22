@@ -4,9 +4,7 @@
 //
 
 #pragma once
-
 #include "targetver.h"
-
 #include <stdio.h>
 #include <tchar.h>
 #include <allegro5/allegro.h>
@@ -15,6 +13,9 @@
 #include <allegro5\allegro_image.h>
 #include <allegro5\allegro_audio.h>
 #include <allegro5\allegro_acodec.h>
+#include <allegro5/allegro_native_dialog.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include <vector>
 #include <algorithm>
 #define _USE_MATH_DEFINES
@@ -24,6 +25,7 @@
 #include <iostream>
 #include <array>
 #include <string>
+#include <map>
 
 // TODO: reference additional headers your program requires here
 typedef std::pair<int, int> coord;

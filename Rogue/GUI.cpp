@@ -3,16 +3,6 @@
 #include "Tile.h"
 #include "World.h"
 
-GUI::GUI()
-{
-}
-
-
-GUI::~GUI()
-{
-}
-
-
 GUI::StatusBar::StatusBar(const int & x, const int & y, const int & var, const int & max_value, ALLEGRO_COLOR color) : x(x), y(y), var(var), max(max_value), color(color)
 {
 }
@@ -26,10 +16,9 @@ void GUI::StatusBar::Draw()
 	ALLEGRO_TRANSFORM temp;
 	al_build_transform(&temp, 0, -Tile::TILE_W / 4, 1, 1, 0);
 	World::Push_Matrix(&temp);
-	int length = var / max;
-
+	int length = (30 * var) / 100;
 	al_draw_filled_rectangle(0, 0, length, 8, color);
-	al_draw_rectangle(0, 0, Tile::TILE_W, 8, al_color_name("white"), 3);
+	al_draw_rectangle(0, 0, Tile::TILE_W, 8, al_color_name("white"), 1);
 
 	World::Pop_Matrix();
 }
@@ -53,4 +42,20 @@ void GUI::DirectionArrow::Draw()
 		.25, .25, Entity::getDirection(direction) + M_PI, 0);
 	al_destroy_bitmap(temp);
 
+}
+
+
+
+GUI::Avatar::Avatar(ALLEGRO_BITMAP * image) : image(image)
+{
+}
+
+GUI::Avatar::~Avatar()
+{
+	al_destroy_bitmap(image);
+}
+
+void GUI::Avatar::Draw()
+{
+	al_draw_bitmap(image, 0, 0, 0);
 }

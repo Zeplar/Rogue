@@ -3,6 +3,7 @@
 #include "World.h"
 #include "GUI.h"
 #include <algorithm>
+#include "TerrainMenu.h"
 
 
 
@@ -16,7 +17,7 @@ Player::Player() : Creature("Player")
 	speed = 20;
 	movementType = Tile::Characteristic::Flyable;
 
-	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/JHep/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/HumanFighter.PNG");
+	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/Joshua/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/HumanFighter.PNG");
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);
 	al_set_target_bitmap(image);
 	float xs = (float)Tile::TILE_W / al_get_bitmap_width(raw);
@@ -24,7 +25,11 @@ Player::Player() : Creature("Player")
 	al_draw_scaled_rotated_bitmap(raw, al_get_bitmap_width(raw) / 2, al_get_bitmap_height(raw) / 2, Tile::TILE_W / 2, Tile::TILE_H / 2, 1, 1, 0, 0);
 	al_destroy_bitmap(raw);
 	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
-	al_identity_transform(&camera_transform);
+	al_identity_transform(&camera.camera_transform);
+
+	//Register the GUI components
+	drawable_components.push_back(new GUI::Avatar(image));
+	drawable_components.push_back(new GUI::DirectionArrow(direction));
 }
 
 Player* Player::make_player(int x, int y)
@@ -78,29 +83,13 @@ void Player::Move(const std::vector<bool>& key)
 void Player::Draw()
 {
 	Creature::Draw();
-	GUI::DirectionArrow(direction).Draw();
-	Transform_Camera();
+	camera.Transform_Camera(x, y);
 }
 
-void Player::Transform_Camera()
-{
-	float w = al_get_display_width(al_get_current_display());		//Screen width
-	float h = al_get_display_height(al_get_current_display());		//Screen height
-	float x = this->x;
-	float y = this->y;
-
-
-	al_transform_coordinates(al_get_current_transform(), &x, &y);
-	if (x < .33*w || x > .66*w) al_translate_transform(&camera_transform, (.5*w - x) * 0.01, 0);
-	if (y < .33*h || y > .66*h) al_translate_transform(&camera_transform, 0, (.5*h - y)*0.01);
-
-	if (x < 0 || x > w || y < 0 || y > w) al_translate_transform(&camera_transform, (.5*w - x), (.5*h - y));
-
-}
 
 const ALLEGRO_TRANSFORM* Player::Get_Transform() const
 {
-	return &camera_transform;
+	return &camera.camera_transform;
 }
 
 

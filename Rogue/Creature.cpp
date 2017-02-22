@@ -2,6 +2,7 @@
 #include "Creature.h"
 #include "World.h"
 #include "Player.h"
+#include "GUI.h"
 
 ALLEGRO_SAMPLE *Creature::sound_attack;
 
@@ -11,9 +12,10 @@ void Creature::Update()
 	Behavior();
 }
 
-ALLEGRO_BITMAP *Creature::dir_marker = 0;
-
-Creature::Creature(std::string name) : Entity(name) {}
+Creature::Creature(std::string name) : Entity(name)
+{
+	drawable_components.push_back(new GUI::StatusBar(x, y, hp, 100, al_color_name("red")));
+}
 
 //Releases the tile pointer to this creature
 void Creature::Die()

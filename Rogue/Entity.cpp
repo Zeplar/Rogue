@@ -11,13 +11,8 @@ Entity::Entity(std::string name)
 
 void Entity::Draw()
 {
-	if (!image) std::cerr << "No image registered on entity\n";
-
-	if (al_get_bitmap_width(image) > Tile::TILE_W * 8)
-		al_draw_bitmap_region(image, Tile::TILE_W * direction, 0, Tile::TILE_W, Tile::TILE_H, 0, 0, 0);
-
-	else
-		al_draw_bitmap(image, 0, 0, 0);
+	for each (auto drawable in drawable_components)
+		drawable->Draw();
 
 	//al_draw_rectangle(0, 0, Tile::TILE_W, Tile::TILE_H, al_color_name("red"), 2);
 
