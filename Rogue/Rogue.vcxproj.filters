@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Creatures">
       <UniqueIdentifier>{3566c9cc-ef2f-4158-a953-f114cec6414a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{31b4f895-a667-48f9-9658-aaa06c8ee356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{e8deb1a3-510f-4315-8fb5-3c190a6bfadd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -57,25 +63,31 @@
     <ClInclude Include="Skeleton.h">
       <Filter>Header Files\Creatures</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rogue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
     <ClInclude Include="TileMenu.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMenu.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Clickable.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Icon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,19 +122,25 @@
     <ClCompile Include="Skeleton.cpp">
       <Filter>Source Files\Creatures</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TileMenu.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="TerrainMenu.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="TileMenu.cpp">
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Clickable.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Icon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
