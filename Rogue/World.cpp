@@ -13,9 +13,26 @@ std::vector<Entity*> World::players;
 std::vector<bool> World::key(ALLEGRO_KEY_MAX, false); //Array indicating which keys were pressed last time we checked
 std::tuple<bool, int, int> World::mouseEvent;
 std::tuple<bool, int, int> World::mouseDown;
+std::vector<Updateable*> World::updateable;
+char World::keyPress = 0;
+int World::timePressed = 0;
 
 
-
+char World::getKey()
+{
+	char ret = 0;
+	
+	for (int i = 1; i <= 36; i++) //1-26 are letters, 27-36 are numbers starting with 0
+	{
+		if (key[i]) {
+			ret = i;
+			break;
+		}
+	}
+	if (ret == 0) return 0; //no alphanumeric key was pressed
+	else if (ret >= 27) return ret - 27 + '0';
+	else return ret - 1 + 'a';
+}
 
 //True if the given chunk is outside the chunk array
 bool World::OutOfBounds(int x, int y)
@@ -97,6 +114,19 @@ Chunk& World::getChunk(int x, int y)
 
 void World::Update()
 {
+
+	//Deal with updating things
+	//TODO: Consolidate this with updating chunks... is spaghetti
+	for (auto p : updateable)
+	{
+		p->Update();
+	}
+
+	timePressed++;
+
+
+	//Deal with updating chunks
+
 	static int selectedTile;
 	int x, y;
 	int index = 0;

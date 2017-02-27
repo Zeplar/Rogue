@@ -186,6 +186,7 @@
     <ClInclude Include="TerrainMenu.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMenu.h" />
+    <ClInclude Include="Updateable.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +211,7 @@
     <ClCompile Include="TerrainMenu.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMenu.cpp" />
+    <ClCompile Include="Updateable.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>

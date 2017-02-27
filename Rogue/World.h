@@ -5,6 +5,7 @@
 #include "Chunk.h"
 #include <map>
 #include <allegro5\events.h>
+#include "Updateable.h"
 
 
 //Stores all of the code related to updating the terrain
@@ -17,8 +18,24 @@ private:
 		}
 	};
 
+
+	//Returns the alphanumeric key being pressed.
+	//This function updates a buffer once/Update.
+	//TODO: Add shift, caps, space, etc.
+	static char getKey();
+
 public:
 	static const int WorldSize = 128;
+
+	static std::vector<Updateable*> updateable;
+
+
+	static char keyPress;
+
+	//Time since the keyPress changed. This allows functions to delay input when holding down a key.
+	//This is expressed in units of Update() cycles since keyPress changed.
+	static int timePressed;
+
 
 	static bool OutOfBounds(int x, int y); //True if the given chunk is outside the chunk array
 

@@ -17,7 +17,7 @@ void Tile::addNote(coord& tile, std::string note)
 	notes[tile].push_back(note);
 }
 
-std::vector<std::string> Tile::getNotes(coord& tile)
+std::vector<std::string>& Tile::getNotes(coord& tile)
 {
 	return notes[tile];
 }
@@ -96,7 +96,6 @@ void Tile::select(coord t)
 	{
 		currentlySelected.push_back(t);
 		tile.selected = true;
-		addNote(t, "I've been selected!");
 	}
 }
 

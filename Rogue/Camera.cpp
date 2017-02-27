@@ -22,13 +22,14 @@ Camera::~Camera()
 
 coord Camera::coordToScreen(const coord& c)
 {
-	int wx, wy;
+	int wx = 0;
+	int wy = 0;
 	al_get_window_position(al_get_current_display(), &wx, &wy);
 
 	float dx = c.first;
 	float dy = c.second;
-	dx -= wx + 8;	//These magic numbers are subtracting window borders I think. Probably specific to the computer.
-	dy -= wy + 38;
+	dx -= wx +8;	//These magic numbers are subtracting window borders I think. Probably specific to the computer.
+	dy -= wy +38;
 
 	return coord(dx, dy);
 }
@@ -132,7 +133,7 @@ void Camera::drawScreen()
 
 void Camera::checkKeys()
 {
-	if (World::key[ALLEGRO_KEY_SPACE])
+	if (World::key[ALLEGRO_KEY_ESCAPE])
 	{
 		for (auto &p : Tile::currentlySelected) World::getTile(p).selected = false;
 		Tile::currentlySelected.clear();

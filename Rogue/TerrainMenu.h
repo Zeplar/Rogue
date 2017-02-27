@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Camera.h"
 #include <experimental\filesystem>
+#include "Icon.h"
 
 class TerrainMenu :
 	public Menu
@@ -11,7 +12,6 @@ public:
 	TerrainMenu();
 	~TerrainMenu();
 	void checkInput();	//Returns the index of the selected tile or -1 if no tile was selected
-	void Update(int selected); //Redraws the menu, shading the selected tile.
 	void Draw();
 	int posX;
 	int posY;
@@ -19,9 +19,11 @@ public:
 	int width;
 
 private:
-	ALLEGRO_BITMAP *image;
+	std::vector<Icon*> icons;
 	const int tileSide = 30;
 	int selected;	//Index of the currently selected tile
 	void setTiles();
+	void loadTiles();
+
 };
 

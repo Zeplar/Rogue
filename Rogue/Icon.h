@@ -4,17 +4,19 @@ class Icon :
 	public Clickable
 {
 public:
-	Icon(coord& topLeft, coord& topRight, ALLEGRO_BITMAP *image);
+	Icon(coord& topLeft, coord& bottomRight, ALLEGRO_BITMAP *image);
 	~Icon();
 	void Draw();
+
 	void onClick();
+
 	void onMouseover();
 
-	void (*clickFunction)();
-	void (*mouseFunction)();
+	bool mask;
 
 private:
 	ALLEGRO_BITMAP *image;
+
 
 };
 

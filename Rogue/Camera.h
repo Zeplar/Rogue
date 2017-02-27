@@ -10,6 +10,8 @@ public:
 
 	//Sets (x,y) to the screen coordinates of the map cursor
 	static void mouseToScreen(int & x, int & y);
+
+	//Returns the world coordinates (tile coordinate) of the given screen coordinate
 	static coord mouseoverTile(coord & c);
 	static ALLEGRO_TRANSFORM *current_transform;
 

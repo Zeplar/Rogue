@@ -9,11 +9,31 @@ TerrainMenu::TerrainMenu()
 	height = 500;
 	width = 200;
 	selected = -1;
-	Update(-1);
+
+	loadTiles();
+
 }
 
 TerrainMenu::~TerrainMenu()
 {
+}
+
+void TerrainMenu::loadTiles()
+{
+	coord topLeft(posX, posY);
+
+	for (auto& tile : Tile::AllTiles)
+	{
+		std::cout << "Loaded icon into terrainmenu\n";
+		icons.push_back(new Icon(topLeft, coord(topLeft.first + Tile::TILE_W, topLeft.second + Tile::TILE_H), tile));
+
+		topLeft.first += Tile::TILE_W;
+		if (topLeft.first > width)
+		{
+			topLeft.first = 0;
+			topLeft.second += Tile::TILE_H;
+		}
+	}
 }
 
 void TerrainMenu::setTiles()
@@ -25,7 +45,7 @@ void TerrainMenu::setTiles()
 
 void TerrainMenu::checkInput()
 {
-	if (World::key[ALLEGRO_KEY_SPACE])
+	if (World::key[ALLEGRO_KEY_ESCAPE])
 		selected = -1;
 
 	if (!std::get<0>(World::mouseEvent)) return;
@@ -37,51 +57,33 @@ void TerrainMenu::checkInput()
 	{
 		return;
 	}
-	x -= posX; y -= posY;	//Normalize x,y coordinates in reference to the menu
-
-	int tileNum = (y / tileSide) * (width / tileSide)
-		+ (x / tileSide);
-
-	if (tileNum >= Tile::baseTiles.size()) return;
-
-	selected = tileNum;
+	int i = 0;
+	for (auto icon : icons)
+	{
+		if (icon->isMousover())
+		{
+			selected = i;
+			break;
+		}
+		i++;
+	}
 	std::get<0>(World::mouseEvent) = false;
 	setTiles();
 }
 
-void TerrainMenu::Update(int selected)
-{
-	auto display = al_get_target_bitmap();
-	int x = 0;
-	int y = 0;
-
-	if (image != nullptr) al_destroy_bitmap(image);
-	image = al_create_bitmap(width, height);
-	al_set_target_bitmap(image);
-	al_draw_filled_rectangle(0, 0, width, height, al_map_rgba(50, 50, 50, 30));
-	al_draw_rectangle(0, 0, width, height, al_color_name("red"), 2);
-
-	for (int i = 0; i < Tile::baseTiles.size(); i++) {
-		if (x >= width) {
-			x = 0;
-			y += tileSide;
-		}
-		if (selected == i) 	al_draw_tinted_bitmap(Tile::AllTiles[selected], al_map_rgb(200, 200, 200), x, y, 0);
-		else	al_draw_bitmap(Tile::AllTiles[i], x, y, 0);
-		al_draw_rectangle(x, y, x + tileSide, y + tileSide, al_map_rgb(20, 20, 200), 1);
-		x += tileSide;
-	}
-
-	al_set_target_bitmap(display);
-
-}
-
 void TerrainMenu::Draw() 
 {
+	al_draw_filled_rectangle(0, 0, width, height, al_map_rgba(50, 50, 50, 30));
+	al_draw_rectangle(0, 0, width, height, al_color_name("red"), 2);
+	
+	for (auto icon : icons) {
+		icon->Draw();
+		icon->mask = false;
+	}
+
 	checkInput();
 	if (selected != -1)
 	{
-		Update(selected);
+		icons[selected]->mask = true;
 	}
-	al_draw_bitmap(image, 0, 0, 0);
 }

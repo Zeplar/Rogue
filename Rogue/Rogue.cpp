@@ -93,7 +93,7 @@ int main()
 	//=================================================================================================================
 	std::cout << "Starting main loop\n";
 	//Main loop
-	while (!World::key[ALLEGRO_KEY_ESCAPE])
+	while (true)
 	{
 		ALLEGRO_EVENT event;
 
@@ -123,6 +123,12 @@ int main()
 		else if (event.type == ALLEGRO_EVENT_KEY_UP)
 		{
 			World::key[event.keyboard.keycode] = false;
+		}
+
+		else if (event.type == ALLEGRO_EVENT_KEY_CHAR)
+		{
+			World::keyPress = event.keyboard.unichar;
+			World::timePressed = 0;
 		}
 
 		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)

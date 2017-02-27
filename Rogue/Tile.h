@@ -11,7 +11,7 @@ class Tile
 
 public:
 	static void addNote(coord & tile, std::string note);
-	static std::vector<std::string> getNotes(coord & tile);
+	static std::vector<std::string>& getNotes(coord & tile);
 	Tile(ALLEGRO_BITMAP* raw);
 	Tile(const Tile& t);
 	Tile();
