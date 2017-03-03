@@ -2,9 +2,28 @@
 #include "Chunk.h"
 #include "World.h"
 
+json Chunk::serialize()
+{
+	std::vector<int> tiles;
+	for (auto &tile : data)
+	{
+		tiles.push_back(tile->id);
+	}
+	return json(tiles);
+}
+
+Chunk::Chunk(json& chunkFile)
+{
+	data = std::vector<Tile*>();
+	for (int tileID : chunkFile)
+	{
+		data.push_back(new Tile(tileID));
+	}
+}
+
 Chunk::Chunk()
 {
-
+	data = std::vector<Tile*>(size*size);
 }
 
 Chunk::~Chunk()
@@ -22,22 +41,23 @@ void Chunk::Draw()
 		for (int j = 0; j < size; j++) {
 			al_build_transform(&temp, i*Tile::TILE_W, j*Tile::TILE_H, 1, 1, 0);
 			World::Push_Matrix(&temp);
-			data[i][j]->Draw();
+			data[i*size+j]->Draw();
 			World::Pop_Matrix();
 		}
 }
 
 Chunk::Chunk(std::vector<int>* sample)
 {
+	data = std::vector<Tile*>(size*size);
 	for (int i = 0; i < Chunk::size; i++)
 		for (int j = 0; j < Chunk::size; j++)
 		{
 			if (sample->at(i*Chunk::size + j))
 			{
-				data[i][j] = new Tile(Tile::baseTiles[1]);
+				data[i*size+j] = new Tile(Tile::baseTiles[1]);
 			}
 			else
-				data[i][j] = new Tile(Tile::baseTiles[0]);
+				data[i*size+j] = new Tile(Tile::baseTiles[0]);
 		}
 }
 
@@ -120,9 +140,8 @@ Chunk* Chunk::Impassable_Chunk()
 {
 	if (!_impassable) {
 		_impassable = new Chunk();
-		for (int i = 0; i < 16; i++)
-			for (int j = 0; j < 16; j++)
-				_impassable->data[i][j] = Tile::impassable_tile;
+		for (int i = 0; i < Chunk::size*Chunk::size; i++)
+				_impassable->data[i] = Tile::impassable_tile;
 	}
 
 	return _impassable;

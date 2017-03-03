@@ -12,6 +12,7 @@ class Tile
 public:
 	static void addNote(coord & tile, std::string note);
 	static std::vector<std::string>& getNotes(coord & tile);
+	Tile(int id);
 	Tile(ALLEGRO_BITMAP* raw);
 	Tile(const Tile& t);
 	Tile();
@@ -40,8 +41,11 @@ public:
 
 	static std::map<coord, std::vector<std::string>> notes;
 
+	const int id;
+
+	static json serializeNotes();
+
 protected:
-	int id;
 	std::vector<bool> characteristics;
 };
 

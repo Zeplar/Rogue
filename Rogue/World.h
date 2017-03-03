@@ -24,10 +24,16 @@ private:
 	//TODO: Add shift, caps, space, etc.
 	static char getKey();
 
+
 public:
 	static const int WorldSize = 128;
 
 	static std::vector<Updateable*> updateable;
+
+	//Returns a json object with all tile ids
+	static json serializeTiles();
+
+	static void loadChunks(json & chunkFile);
 
 
 	static char keyPress;

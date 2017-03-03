@@ -9,7 +9,11 @@ public:
 	~Chunk();
 	void Draw();
 	static const int size = 16;
-	Tile *data[size][size];
+	std::vector<Tile *>data;
+
+	json serialize();
+
+	Chunk(json & chunkFile);
 
 private:
 	Chunk();

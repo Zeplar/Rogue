@@ -34,6 +34,33 @@ char World::getKey()
 	else return ret - 1 + 'a';
 }
 
+json World::serializeTiles()
+{
+	json j;
+	for (auto& chunk : chunks)
+		j[chunk.first.first][chunk.first.second] = chunk.second->serialize();
+	return j;
+}
+
+void World::loadChunks(json& chunkFile)
+{
+	int x = 0;
+	int y = 0;
+	std::cout << chunkFile << std::endl;
+	for (auto& chunkX : chunkFile)
+	{
+		for (auto& chunkY : chunkX)
+		{
+			auto chunk = new Chunk(chunkY);
+			chunks[coord(x, y)] = chunk;
+			y++;
+
+		}
+		x++;
+	}
+
+}
+
 //True if the given chunk is outside the chunk array
 bool World::OutOfBounds(int x, int y)
 {
@@ -85,7 +112,7 @@ void World::setTile(const coord& c, Tile* t)
 {
 	if (TileOutOfBounds(c.first, c.second)) return;
 	auto& chunk = chunks[coord(c.first / Chunk::size, c.second / Chunk::size)];
-	auto& tile = chunk->data[c.first % Chunk::size][c.second % Chunk::size];
+	auto& tile = chunk->data[(c.first % Chunk::size)*Chunk::size + (c.second % Chunk::size)];
 	t->entity.swap(tile->entity);
 	tile = t;
 }
@@ -93,10 +120,10 @@ void World::setTile(const coord& c, Tile* t)
 //Returns the tile at the given coordinate
 Tile& World::getTile(int x, int y)
 {
-	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk()->data[0][0];
+	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk()->data[0];
 	auto& chunk = chunks[coord(x / Chunk::size, y / Chunk::size)];
 	
-	return *chunk->data[x % Chunk::size][y % Chunk::size];
+	return *chunk->data[(x % Chunk::size)*Chunk::size + (y % Chunk::size)];
 }
 
 Tile& World::getTile(const coord& c)

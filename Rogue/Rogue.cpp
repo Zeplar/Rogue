@@ -5,10 +5,10 @@
 #include <time.h>
 #include "World.h"
 #include <random>
-#include "Skeleton.h"
 #include "Player.h"
 #include "Camera.h"
 #include "Rogue.h"
+#include "SaveFile.h"
 
 int main()
 {
@@ -86,13 +86,14 @@ int main()
 	
 	World::SetDisplay(al_get_backbuffer(display));
 	World::Initialize();
-	auto primary = Player::make_player(0, 0);
-	int x, y;
-	primary->GetPosition(x, y);
-	Skeleton::makeSkeleton(x+5, y+9);
 	//=================================================================================================================
 	std::cout << "Starting main loop\n";
 	//Main loop
+	SaveFile::loadFile("save1.json");
+	auto primary = Player::make_player(0, 0);
+	int x, y;
+	primary->GetPosition(x, y);
+
 	while (true)
 	{
 		ALLEGRO_EVENT event;
@@ -113,8 +114,10 @@ int main()
 
 
 		else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			SaveFile("save1.json");
 			break;
-
+		}
 		else if (event.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
 			World::key[event.keyboard.keycode] = true;

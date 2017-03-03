@@ -22,7 +22,13 @@ std::vector<std::string>& Tile::getNotes(coord& tile)
 	return notes[tile];
 }
 
-Tile::Tile(ALLEGRO_BITMAP *raw)
+Tile::Tile(int id) : id(id)
+{
+	characteristics = baseTiles[id].characteristics;
+	entity = nullptr;
+}
+
+Tile::Tile(ALLEGRO_BITMAP *raw) : id(Tile::AllTiles.size())
 {
 	for (int i = 0; i < 8; i++)
 		characteristics.push_back(false);
@@ -36,21 +42,19 @@ Tile::Tile(ALLEGRO_BITMAP *raw)
 	al_destroy_bitmap(raw);
 
 	//Register the image
-	id = (int)Tile::AllTiles.size();
 	Tile::AllTiles.push_back(image);
 	baseTiles.push_back(*this);
 }
 
 
 //Clone method
-Tile::Tile(const Tile& t)
+Tile::Tile(const Tile& t) : id(t.id)
 {
-	id = t.id;
 	characteristics = std::vector<bool>(t.characteristics);
 	entity = nullptr;
 }
 
-Tile::Tile()
+Tile::Tile() : id(-1)
 {
 	throw new std::exception("Tile created with no arguments");
 }
@@ -118,7 +122,6 @@ void Tile::loadTiles()
 			}
 		}
 		impassable_tile = new Tile(baseTiles[1]);
-		impassable_tile->id = -1;
 		impassable_tile->SetCharacteristic(Characteristic::Flyable, false);
 	}
 	catch (const std::exception& e)
@@ -127,4 +130,14 @@ void Tile::loadTiles()
 		throw e;
 	}
 	std::cout << "Loaded " << baseTiles.size() << " terrain tiles.\n";
+}
+
+json Tile::serializeNotes()
+{
+	json j;
+	for (auto &p : notes)
+	{
+		j[p.first.first][p.first.second] = p.second;
+	}
+	return j;
 }

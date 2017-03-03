@@ -26,6 +26,9 @@
 #include <array>
 #include <string>
 #include <map>
+#include "json.hpp"
+
 
 // TODO: reference additional headers your program requires here
 typedef std::pair<int, int> coord;
+using json = nlohmann::json;
