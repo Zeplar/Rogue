@@ -83,14 +83,14 @@ class Creature::A_Star
 
 private:
 
-	static int coord_to_index(coord& c, int radius)
+	static int coord_to_index(Coord& c, int radius)
 	{
-		return (c.first + radius) * 2 * radius + c.second + radius;
+		return (c.x + radius) * 2 * radius + c.y + radius;
 	}
 
-	static coord index_to_coord(int index, int radius)
+	static Coord index_to_coord(int index, int radius)
 	{
-		return coord(index / radius / 2 - radius, index % (2 * radius) - radius);
+		return Coord(index / radius / 2 - radius, index % (2 * radius) - radius, true);
 	}
 
 	static std::vector<int> neighbors(int index, int radius)
@@ -107,15 +107,15 @@ private:
 		return ret;
 	}
 
-	static int distance(coord a, coord b)
+	static int distance(Coord& a, Coord& b)
 	{
-		return std::max(a.first - b.first, a.second - b.second);
+		return std::max(a.x - b.x, a.y - b.y);
 	}
 
-	static std::unique_ptr<std::vector<coord>> Reconstruct_Path(std::vector<int>& came_from, int current, int radius)
+	static std::unique_ptr<std::vector<Coord>> Reconstruct_Path(std::vector<int>& came_from, int current, int radius)
 	{
-		auto ret = std::make_unique<std::vector<coord>>();
-		int start = coord_to_index(coord(0, 0), radius);
+		auto ret = std::make_unique<std::vector<Coord>>();
+		int start = coord_to_index(Coord(0, 0,true), radius);
 		ret->push_back(index_to_coord(current, radius));
 
 		while (current != start)
@@ -127,11 +127,11 @@ private:
 	}
 
 public:
-	static std::unique_ptr<std::vector<coord>> FindPathTo(Creature& self, coord start, coord end, int radius_to_search, Tile::Characteristic movementType)
+	static std::unique_ptr<std::vector<Coord>> FindPathTo(Creature& self, Coord start, Coord end, int radius_to_search, Tile::Characteristic movementType)
 	{
 		int size = radius_to_search * radius_to_search * 4;
 		int x, y;
-		coord end_offset = coord(end.first - start.first, end.second - start.second);
+		Coord end_offset = Coord(end.x - start.x, end.y - start.y, true);
 		int end_index = coord_to_index(end_offset, radius_to_search);
 
 		//The set of nodes already evaluated
@@ -140,7 +140,7 @@ public:
 		//The set of discovered nodes waiting to be evaluated
 		std::vector<int> open_set;
 
-		open_set.push_back(coord_to_index(coord(0,0), radius_to_search));
+		open_set.push_back(coord_to_index(Coord(0,0,true), radius_to_search));
 
 		//For each node, which node it can most efficiently be reached from.
 		std::vector<int> came_from(size, open_set[0]);
@@ -153,7 +153,7 @@ public:
 		std::vector<int> fScore(size, INT32_MAX);
 		fScore[open_set[0]] = distance(end, start);
 
-		if (!World::getTile(end.first, end.second).Characteristics()[movementType]) return 0;
+		if (!World::getTile(end.x, end.y).Characteristics()[movementType]) return 0;
 
 		while (!open_set.empty())
 		{
@@ -174,8 +174,8 @@ public:
 				if (std::find(closed_set.begin(), closed_set.end(), neighbor) != closed_set.end())
 					continue;	//Ignore neighbors which have been evaluated
 
-				x = index_to_coord(neighbor, radius_to_search).first + start.first;
-				y = index_to_coord(neighbor, radius_to_search).second + start.second;
+				x = index_to_coord(neighbor, radius_to_search).x + start.x;
+				y = index_to_coord(neighbor, radius_to_search).y + start.y;
 
 				if (!World::getTile(x, y).Characteristics()[movementType])
 				{
@@ -195,7 +195,7 @@ public:
 				came_from[neighbor] = current;
 
 				gScore[neighbor] = tentative_gScore;
-				coord nghbr = index_to_coord(neighbor, radius_to_search);
+				Coord nghbr = index_to_coord(neighbor, radius_to_search);
 				fScore[neighbor] = gScore[neighbor] + distance(nghbr, end);
 			}
 
@@ -207,7 +207,7 @@ public:
 	}
 };
 
-std::unique_ptr<std::vector<std::pair<int, int>>> Creature::FindPathTo(int x, int y, int radius_to_search)
+std::unique_ptr<std::vector<Coord>> Creature::FindPathTo(int x, int y, int radius_to_search)
 {
-	return A_Star::FindPathTo(*this, coord(this->x, this->y), coord(x, y), radius_to_search, movementType);
+	return A_Star::FindPathTo(*this, Coord(this->x, this->y,true), Coord(x, y,true), radius_to_search, movementType);
 }

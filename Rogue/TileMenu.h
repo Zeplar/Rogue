@@ -1,6 +1,9 @@
 #pragma once
 #include "Menu.h"
 #include "Updateable.h"
+#include "Selection.h"
+#include <list>
+
 class TileMenu :
 	public Menu, public Updateable
 {
@@ -12,7 +15,7 @@ public:
 	void Update();
 
 	//Updates the selected tile; pass (-1,-1) to hide the menu
-	void Update(coord& tile);
+	void Update(Selection& selection);
 
 	//returns true if there is a currently selected tile
 	bool tileActive();
@@ -21,11 +24,17 @@ public:
 	int posY;
 
 private:
-	coord tile;
+	Selection selection;
 	int height;
 	int width;
 	int note;	//the note we're currently editing
 	ALLEGRO_FONT *font;
+
+	std::list<std::pair<Selection, std::vector<std::string>>> notes;
+	void addNote(std::string note);
+	std::vector<std::string>& getNotes();
+
+	json serializeNotes();
 
 };
 

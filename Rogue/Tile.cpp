@@ -7,20 +7,9 @@
 namespace fs = std::experimental::filesystem;
 
 std::vector<ALLEGRO_BITMAP*> Tile::AllTiles;
-std::vector<coord> Tile::currentlySelected;
+std::vector<Coord> Tile::currentlySelected;
 std::vector<Tile> Tile::baseTiles;
 Tile* Tile::impassable_tile = nullptr;
-std::map<coord, std::vector<std::string>> Tile::notes;
-
-void Tile::addNote(coord& tile, std::string note)
-{
-	notes[tile].push_back(note);
-}
-
-std::vector<std::string>& Tile::getNotes(coord& tile)
-{
-	return notes[tile];
-}
 
 Tile::Tile(int id) : id(id)
 {
@@ -93,7 +82,7 @@ void Tile::Draw()
 }
 
 
-void Tile::select(coord t)
+void Tile::select(Coord& t)
 {
 	auto &tile = World::getTile(t);
 	if (tile.id != -1)
@@ -130,14 +119,4 @@ void Tile::loadTiles()
 		throw e;
 	}
 	std::cout << "Loaded " << baseTiles.size() << " terrain tiles.\n";
-}
-
-json Tile::serializeNotes()
-{
-	json j;
-	for (auto &p : notes)
-	{
-		j[p.first.first][p.first.second] = p.second;
-	}
-	return j;
 }

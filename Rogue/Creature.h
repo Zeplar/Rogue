@@ -31,7 +31,7 @@ protected:
 	Entity* Find_Target_Player(int range);
 	void MoveTowardTarget();
 	void Move(int dx, int dy);
-	std::unique_ptr<std::vector<std::pair<int, int>>> FindPathTo(int x, int y, int radius_to_search);
+	std::unique_ptr<std::vector<Coord>> FindPathTo(int x, int y, int radius_to_search);
 	Entity *target;
 	static ALLEGRO_SAMPLE *sound_attack;
 	static ALLEGRO_SAMPLE *sound_move;

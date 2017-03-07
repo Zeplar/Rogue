@@ -89,7 +89,7 @@ int main()
 	//=================================================================================================================
 	std::cout << "Starting main loop\n";
 	//Main loop
-	SaveFile::loadFile("save1.json");
+	if (SaveFile::saveExists("save1.json")) SaveFile::loadFile("save1.json");
 	auto primary = Player::make_player(0, 0);
 	int x, y;
 	primary->GetPosition(x, y);
@@ -136,13 +136,14 @@ int main()
 
 		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
 		{
-			World::mouseDown = std::tuple<bool, int, int>(true, event.mouse.x, event.mouse.y);
+			World::mouseDown = Coord(event.mouse.x, event.mouse.y,true);
+			World::mouseEvent.tile = false;
 		}
 
 		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
 		{
-			World::mouseEvent = std::tuple<bool, int, int>(true, event.mouse.x, event.mouse.y);
-			std::get<0>(World::mouseDown) = false;
+			World::mouseEvent = Coord(event.mouse.x, event.mouse.y,true);
+			World::mouseDown.tile = false;
 		}
 
 		if (redraw && al_is_event_queue_empty(event_queue))

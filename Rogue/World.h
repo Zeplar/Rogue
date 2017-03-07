@@ -12,13 +12,6 @@
 class World
 {
 private:
-	struct cmpCoord {
-		bool operator()(const coord& a, const coord& b) const {
-			return a.first < b.first ? true : a.first == b.first && a.second < b.second ? true : false;
-		}
-	};
-
-
 	//Returns the alphanumeric key being pressed.
 	//This function updates a buffer once/Update.
 	//TODO: Add shift, caps, space, etc.
@@ -49,9 +42,9 @@ public:
 
 	static void SetDisplay(ALLEGRO_BITMAP *display);
 
-	static void setTile(const coord & c, Tile * t);
+	static void setTile(const Coord & c, Tile * t);
 
-	static std::unique_ptr<std::map<coord,Chunk*,World::cmpCoord>> GetChunksAround(int x, int y);
+	static std::unique_ptr<std::map<Coord,Chunk*>> GetChunksAround(int x, int y);
 
 	static void Draw(int x, int y);
 
@@ -61,7 +54,7 @@ public:
 
 	static Tile& getTile(int x, int y);
 
-	static Tile& getTile(const coord & c);
+	static Tile& getTile(const Coord & c);
 
 	static Chunk& getChunk(int x, int y);
 
@@ -72,8 +65,8 @@ public:
 
 	static std::vector<bool> key; //Array indicating which keys were pressed last time we checked
 
-	static std::tuple<bool,int, int> mouseEvent;	//First entry indicates a new event, next two entries are x,
-	static std::tuple<bool, int, int> mouseDown;
+	static Coord mouseEvent;
+	static Coord mouseDown;
 
 	static void RegisterPlayer(Entity * p);
 
@@ -82,7 +75,7 @@ public:
 private:
 
 
-	static std::map<coord, Chunk*, cmpCoord> chunks;
+	static std::map<Coord, Chunk*> chunks;
 	static ALLEGRO_BITMAP *display;
 	static ALLEGRO_TRANSFORM transforms[16];
 	static int transform_index;

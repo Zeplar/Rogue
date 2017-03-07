@@ -6,20 +6,25 @@ public:
 	Camera();
 	~Camera();
 
-	static coord coordToScreen(const coord & c);
+	//Returns the screen coordinates of the given tile coordinates
+	static Coord tileToScreen(const Coord & tile);
 
-	//Sets (x,y) to the screen coordinates of the map cursor
-	static void mouseToScreen(int & x, int & y);
+	static Coord coordToScreen(const Coord & c);
+
+	//Returns the screen coordinates of the map cursor
+	static Coord mouseToScreen();
 
 	//Returns the world coordinates (tile coordinate) of the given screen coordinate
-	static coord mouseoverTile(coord & c);
+	static Coord screenToTile(const Coord & c);
+
 	static ALLEGRO_TRANSFORM *current_transform;
 
-	static coord mouseoverTile();
+	static Coord mouseoverTile();
 
-	static void selectionRectangle(coord & topLeft, coord & bottomRight);
+	//Converts the tile coordinates into a rectangle on screen
+	static void selectionRectangle(Coord & topLeft, Coord & bottomRight);
 
-	static std::vector<coord> mouseoverTiles();
+	static std::vector<Coord> mouseoverTiles();
 	
 	ALLEGRO_TRANSFORM camera_transform;
 	void Transform_Camera(float x, float y);

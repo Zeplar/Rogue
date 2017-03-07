@@ -3,6 +3,7 @@
 #include "Tile.h"
 #include "Camera.h"
 #include "World.h"
+#include "Drawable.h"
 
 TileMenu::TileMenu()
 {
@@ -12,7 +13,8 @@ TileMenu::TileMenu()
 	posY = 10;
 	font = al_load_ttf_font("Times.ttf", 24, 0);
 	note = 0;
-	tile = coord(-1, -1);
+	selection = Selection();
+
 	if (!font)
 	{
 		std::cout << "Failed to load font.\n";
@@ -26,19 +28,29 @@ TileMenu::~TileMenu()
 {
 }
 
-void TileMenu::Update(coord& tile)
+void TileMenu::Update(Selection& selection)
 {
-	this->tile = tile;
-	note = 0;
-	if (Tile::notes[tile].size() == 0)
+	if (this->selection == selection) return;
+	if (this->selection && getNotes().size() == 1 && getNotes()[0].length() == 0)
 	{
-		Tile::addNote(tile, std::string());
+		for (auto& n : notes)
+		{
+			if (n.first == this->selection)
+			{
+				notes.remove(n);
+				break;
+			}
+		}
 	}
+	this->selection = selection;
+	note = 0;
+	if (!selection) return;
+	if (getNotes().size() == 0) getNotes().push_back(std::string());
 }
 
 bool TileMenu::tileActive()
 {
-	return (tile.first >= 0);
+	return bool(selection);
 }
 
 void TileMenu::Draw()
@@ -46,32 +58,73 @@ void TileMenu::Draw()
 	auto line = posY;
 	if (!tileActive()) return;
 	al_draw_filled_rectangle(posX, posY, posX+width, posY+height, al_map_rgba(30,30,30,100));
-	for (auto& str : Tile::getNotes(tile))
+	for (auto& str : getNotes())
 	{
 		al_draw_text(font, al_map_rgb(255, 255, 255), posX, line + 10, 0, str.data());
 		line += 20;
 	}
 
-	int cursorX = al_get_text_width(font, Tile::getNotes(tile)[note].data()) + posX;
+	int cursorX = al_get_text_width(font, getNotes()[note].data()) + posX;
 	int cursorY = note * 20 + posY + 15;
 	al_draw_line(cursorX, cursorY, cursorX, cursorY + 15, al_color_name("white"), 2);
+
+
+	for (auto& s : notes)
+	{
+		if (s.first.overlaps(selection))
+			s.first.Draw();
+	}
 	
+}
+
+
+json TileMenu::serializeNotes()
+{
+	json j;
+	for (auto &p : notes)
+	{
+		//TODO
+	}
+	return j;
+}
+
+void TileMenu::addNote(std::string note)
+{
+	auto& str_vec = getNotes();
+	str_vec.push_back(note);
+}
+
+std::vector<std::string>& TileMenu::getNotes()
+{
+	if (!selection) throw std::exception();
+
+	for (auto& n : notes)
+	{
+		if (n.first == selection)
+		{
+			return n.second;
+		}
+	}
+	notes.push_back(std::pair<Selection, std::vector<std::string>>(selection, std::vector<std::string>()));
+	return notes.back().second;
 }
 
 void TileMenu::Update()
 {
-	if (Tile::currentlySelected.size() == 1 && Tile::currentlySelected[0] != tile) Update(Tile::currentlySelected[0]);
+	Update(Selection(Tile::currentlySelected));
 
 	if (World::key[ALLEGRO_KEY_ESCAPE])
 	{
-		Update(coord(-1, -1));
+		Update(Selection());
 		return;
 	}
 
 	else if (!tileActive() || World::timePressed > 0) return;
 
-	auto& vec = Tile::getNotes(tile);
+	auto& vec = getNotes();
+	if (vec.size() < 1) vec.push_back(std::string());
 	auto& n = vec[note];
+
 
 	if (World::key[ALLEGRO_KEY_ENTER])
 	{

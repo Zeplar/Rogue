@@ -3,7 +3,7 @@
 class Clickable : public GUI::Drawable
 {
 public:
-	Clickable(coord& topLeft, coord& bottomRight);
+	Clickable(Coord& topLeft, Coord& bottomRight);
 	~Clickable();
 
 	virtual void Draw() = 0;
@@ -17,8 +17,8 @@ public:
 	virtual bool isMousover();
 
 protected:
-	coord topLeft;
-	coord bottomRight;
+	Coord topLeft;
+	Coord bottomRight;
 
 
 };

@@ -11,7 +11,7 @@ SaveFile::SaveFile(const std::string& fileName)
 {
 	json save;
 	save["chunks"] = World::serializeTiles();
-	save["notes"] = Tile::serializeNotes();
+	//save["notes"] = Tile::serializeNotes();
 	
 	std::ofstream o(fileName);
 	o << save;
@@ -28,4 +28,9 @@ void SaveFile::loadFile(const std::string& fileName)
 
 SaveFile::~SaveFile()
 {
+}
+
+bool SaveFile::saveExists(const std::string & filename)
+{
+	return std::ifstream(filename).good();
 }

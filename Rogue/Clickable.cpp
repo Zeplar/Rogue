@@ -3,7 +3,7 @@
 #include "Camera.h"
 
 
-Clickable::Clickable(coord& topLeft, coord& bottomRight)
+Clickable::Clickable(Coord& topLeft, Coord& bottomRight)
 {
 	this->topLeft = topLeft;
 	this->bottomRight = bottomRight;
@@ -16,13 +16,9 @@ Clickable::~Clickable()
 
 bool Clickable::isMousover()
 {
-	coord mouseCoords;
-	Camera::mouseToScreen(mouseCoords.first, mouseCoords.second);
-
-	std::cout << "Mouse: " << mouseCoords.first << "," << mouseCoords.second;
-	std::cout << "   Icon: " << topLeft.first << "," << topLeft.second << "-" << bottomRight.first << "," << bottomRight.second << "\n";
+	Coord mouseCoords = Camera::mouseToScreen();
 	
-	bool horiz = topLeft.first < mouseCoords.first && mouseCoords.first < bottomRight.first;
-	bool vert = topLeft.second < mouseCoords.second && mouseCoords.second < bottomRight.second;
+	bool horiz = topLeft.x < mouseCoords.x && mouseCoords.x < bottomRight.x;
+	bool vert = topLeft.y < mouseCoords.y && mouseCoords.y < bottomRight.y;
 	return horiz && vert;
 }

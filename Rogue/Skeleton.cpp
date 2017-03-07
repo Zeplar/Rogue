@@ -43,28 +43,28 @@ Skeleton::~Skeleton()
 
 void Skeleton::Behavior()
 {
-	static coord tile_target;
+	static Coord tile_target;
 	if (moveTimer < speed) return;
 
 	moveTimer = 0;
 	
 	if (!target) target = Find_Target_Player(10);
 	if (target && target->getTile().Characteristics()[movementType])
-		target->GetPosition(tile_target.first, tile_target.second);
+		target->GetPosition(tile_target.x, tile_target.y);
 
-	if (auto path = FindPathTo(tile_target.first, tile_target.second, 10))
+	if (auto path = FindPathTo(tile_target.x, tile_target.y, 10))
 	{
-		int dx = path->back().first;
-		int dy = path->back().second;
+		int dx = path->back().x;
+		int dy = path->back().y;
 		Move(dx, dy);
 		SetDirection(dx, dy);
 		Attack();
 	}
 
-	if (x == tile_target.first && y == tile_target.second)
+	if (x == tile_target.x && y == tile_target.y)
 	{
-		tile_target.first += std::rand() % 10 - 5;
-		tile_target.second += std::rand() % 10 - 5;
+		tile_target.x += std::rand() % 10 - 5;
+		tile_target.y += std::rand() % 10 - 5;
 	}
 }
 

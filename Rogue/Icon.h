@@ -4,7 +4,7 @@ class Icon :
 	public Clickable
 {
 public:
-	Icon(coord& topLeft, coord& bottomRight, ALLEGRO_BITMAP *image);
+	Icon(Coord& topLeft, Coord& bottomRight, ALLEGRO_BITMAP *image);
 	~Icon();
 	void Draw();
 

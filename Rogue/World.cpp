@@ -5,14 +5,14 @@
 using namespace std;
 
 ALLEGRO_BITMAP *World::display = NULL;
-std::map<coord, Chunk*, World::cmpCoord> World::chunks;
+std::map<Coord, Chunk*> World::chunks;
 const int RenderDistance = 2;
 ALLEGRO_TRANSFORM World::transforms[16];
 int World::transform_index = 0;
 std::vector<Entity*> World::players;
 std::vector<bool> World::key(ALLEGRO_KEY_MAX, false); //Array indicating which keys were pressed last time we checked
-std::tuple<bool, int, int> World::mouseEvent;
-std::tuple<bool, int, int> World::mouseDown;
+Coord World::mouseEvent;
+Coord World::mouseDown;
 std::vector<Updateable*> World::updateable;
 char World::keyPress = 0;
 int World::timePressed = 0;
@@ -38,7 +38,7 @@ json World::serializeTiles()
 {
 	json j;
 	for (auto& chunk : chunks)
-		j[chunk.first.first][chunk.first.second] = chunk.second->serialize();
+		j[chunk.first.x][chunk.first.y] = chunk.second->serialize();
 	return j;
 }
 
@@ -52,7 +52,7 @@ void World::loadChunks(json& chunkFile)
 		for (auto& chunkY : chunkX)
 		{
 			auto chunk = new Chunk(chunkY);
-			chunks[coord(x, y)] = chunk;
+			chunks[Coord(x, y,true)] = chunk;
 			y++;
 
 		}
@@ -108,11 +108,12 @@ void World::SetDisplay(ALLEGRO_BITMAP *display)
 	World::display = display;
 }
 
-void World::setTile(const coord& c, Tile* t)
+void World::setTile(const Coord& c, Tile* t)
 {
-	if (TileOutOfBounds(c.first, c.second)) return;
-	auto& chunk = chunks[coord(c.first / Chunk::size, c.second / Chunk::size)];
-	auto& tile = chunk->data[(c.first % Chunk::size)*Chunk::size + (c.second % Chunk::size)];
+	if (!c.tile) throw Coord::CoordExcept();
+	if (TileOutOfBounds(c.x, c.y)) return;
+	auto& chunk = chunks[Coord(c.x / Chunk::size, c.y / Chunk::size, true)];
+	auto& tile = chunk->data[(c.x % Chunk::size)*Chunk::size + (c.y % Chunk::size)];
 	t->entity.swap(tile->entity);
 	tile = t;
 }
@@ -121,22 +122,20 @@ void World::setTile(const coord& c, Tile* t)
 Tile& World::getTile(int x, int y)
 {
 	if (TileOutOfBounds(x, y)) return *Chunk::Impassable_Chunk()->data[0];
-	auto& chunk = chunks[coord(x / Chunk::size, y / Chunk::size)];
+	auto& chunk = chunks[Coord(x / Chunk::size, y / Chunk::size, true)];
 	
 	return *chunk->data[(x % Chunk::size)*Chunk::size + (y % Chunk::size)];
 }
 
-Tile& World::getTile(const coord& c)
+Tile& World::getTile(const Coord& c)
 {
-	int x = c.first;
-	int y = c.second;
-	return getTile(x, y);
+	return getTile(c.x, c.y);
 }
 
 Chunk& World::getChunk(int x, int y)
 {
 	if (OutOfBounds(x, y)) return *Chunk::Impassable_Chunk();
-	return *chunks[coord(x / WorldSize, y % WorldSize)];
+	return *chunks[Coord(x / WorldSize, y % WorldSize, true)];
 }
 
 void World::Update()
@@ -162,7 +161,7 @@ void World::Update()
 	{
 		p->GetPosition(x, y);
 		auto chunks = World::GetChunksAround(x,y);
-		for each (auto c in *chunks)
+		for (auto& c : *chunks)
 		{
 			if (c.second == Chunk::Impassable_Chunk()) continue;
 			for each (Tile *t in c.second->data)
@@ -178,14 +177,14 @@ void World::Update()
 
 
 //Generates the chunks RenderDistance radius around the given player, if they have not already been generated.
-std::unique_ptr<std::map<coord, Chunk*, World::cmpCoord>> World::GetChunksAround(int x, int y)
+std::unique_ptr<std::map<Coord, Chunk*>> World::GetChunksAround(int x, int y)
 {
-	auto ret = make_unique<std::map<coord, Chunk*, World::cmpCoord>>();
+	auto ret = make_unique<std::map<Coord, Chunk*>>();
 	for (int i = (x / Chunk::size) - RenderDistance; i < (x / Chunk::size) + RenderDistance; i++)
 		for (int j = (y / Chunk::size) - RenderDistance; j < (y / Chunk::size) + RenderDistance; j++)
 		{
-			coord chunk(i,j);
-			if (OutOfBounds(chunk.first, chunk.second))
+			Coord chunk(i, j, true);
+			if (OutOfBounds(i,j))
 			{
 				(*ret)[chunk] = (Chunk::Impassable_Chunk());
 			}
@@ -212,15 +211,15 @@ void World::Draw(int x, int y)
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	ALLEGRO_TRANSFORM temp;
 	int ex, ey;
-	for each (auto c in *chunks)
+	for each (auto& c in *chunks)
 	{
-		al_build_transform(&temp, c.first.first * Chunk::size * Tile::TILE_W, c.first.second * Chunk::size * Tile::TILE_H, 1, 1, 0);
+		al_build_transform(&temp, c.first.x * Chunk::size * Tile::TILE_W, c.first.y * Chunk::size * Tile::TILE_H, 1, 1, 0);
 		Push_Matrix(&temp);
 		c.second->Draw();
 		Pop_Matrix();
 	}
 
-	for each (auto c in *chunks)
+	for each (auto& c in *chunks)
 		for each (Tile *t in c.second->data)
 		{
 			if (t->selected) counts++;

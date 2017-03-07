@@ -20,18 +20,18 @@ TerrainMenu::~TerrainMenu()
 
 void TerrainMenu::loadTiles()
 {
-	coord topLeft(posX, posY);
+	Coord topLeft(posX, posY, false);
 
 	for (auto& tile : Tile::AllTiles)
 	{
 		std::cout << "Loaded icon into terrainmenu\n";
-		icons.push_back(new Icon(topLeft, coord(topLeft.first + Tile::TILE_W, topLeft.second + Tile::TILE_H), tile));
+		icons.push_back(new Icon(topLeft, Coord(topLeft.x + Tile::TILE_W, topLeft.y + Tile::TILE_H, false), tile));
 
-		topLeft.first += Tile::TILE_W;
-		if (topLeft.first > width)
+		topLeft.x += Tile::TILE_W;
+		if (topLeft.x > width)
 		{
-			topLeft.first = 0;
-			topLeft.second += Tile::TILE_H;
+			topLeft.x = 0;
+			topLeft.y += Tile::TILE_H;
 		}
 	}
 }
@@ -48,12 +48,9 @@ void TerrainMenu::checkInput()
 	if (World::key[ALLEGRO_KEY_ESCAPE])
 		selected = -1;
 
-	if (!std::get<0>(World::mouseEvent)) return;
+	if (!World::mouseEvent) return;
 
-	int x = std::get<1>(World::mouseEvent);
-	int y = std::get<2>(World::mouseEvent);
-
-	if (x > posX + width || y > posY + height)
+	if (World::mouseEvent.x > posX + width || World::mouseEvent.y > posY + height)
 	{
 		return;
 	}
@@ -67,7 +64,7 @@ void TerrainMenu::checkInput()
 		}
 		i++;
 	}
-	std::get<0>(World::mouseEvent) = false;
+	World::mouseEvent = Coord();
 	setTiles();
 }
 

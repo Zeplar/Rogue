@@ -20,78 +20,83 @@ Camera::~Camera()
 {
 }
 
-coord Camera::coordToScreen(const coord& c)
+Coord Camera::tileToScreen(const Coord& tile)
+{
+	if (!tile.tile) throw new Coord::CoordExcept();
+	float xz = 0;
+	float yz = 0;
+	al_transform_coordinates(current_transform, &xz, &yz);
+	int x = xz + (tile.x)*Tile::TILE_W;
+	int y = yz + (tile.y)*Tile::TILE_H;
+	return Coord(x, y, false);
+}
+
+Coord Camera::coordToScreen(const Coord& c)
 {
 	int wx = 0;
 	int wy = 0;
 	al_get_window_position(al_get_current_display(), &wx, &wy);
 
-	float dx = c.first;
-	float dy = c.second;
+	float dx = c.x;
+	float dy = c.y;
 	dx -= wx +8;	//These magic numbers are subtracting window borders I think. Probably specific to the computer.
 	dy -= wy +38;
 
-	return coord(dx, dy);
+	return Coord(dx, dy,false);
 }
 
-void Camera::mouseToScreen(int& x, int& y)
+Coord Camera::mouseToScreen()
 {
-	coord c;
-	al_get_mouse_cursor_position(&c.first, &c.second);
-	coord ret = coordToScreen(c);
-	x = ret.first;
-	y = ret.second;
+	Coord c(0,0,false);
+	al_get_mouse_cursor_position(&c.x, &c.y);
+	return coordToScreen(c);
 }
 
-coord Camera::mouseoverTile(coord& c)
+Coord Camera::screenToTile(const Coord& c)
 {
+	if (c.tile) throw new Coord::CoordExcept();
 	//These offsets set the top left walkable tile to 0,0. Otherwise some tiles are negative, which screws up the rounding on the integer division.
 	const float x_offset = 16 * Tile::TILE_W;
 	const float y_offset = 2 * Tile::TILE_H;
 
-	coord scr = coordToScreen(c);
-	float fx = scr.first; float fy = scr.second;
+	Coord scr = coordToScreen(c);
+	float fx = scr.x; float fy = scr.y;
 	ALLEGRO_TRANSFORM inverse;
 	al_copy_transform(&inverse, current_transform);
 	al_invert_transform(&inverse);
 	al_transform_coordinates(&inverse, &fx, &fy);
 	fx += x_offset;
 	fy += y_offset;
-	coord ret(fx / Tile::TILE_W, fy / Tile::TILE_H);
-	
-	return ret;
+	return Coord(fx / Tile::TILE_W, fy / Tile::TILE_H, true);
 }
 
-coord Camera::mouseoverTile()
+Coord Camera::mouseoverTile()
 {
-	int x, y;
-	mouseToScreen(x, y);
-	return mouseoverTile(coord(x, y));
+	return screenToTile(mouseToScreen());
 }
 
-void Camera::selectionRectangle(coord& topLeft, coord& bottomRight)
+void Camera::selectionRectangle(Coord& topLeft, Coord& bottomRight)
 {
-	coord down(std::get<1>(World::mouseDown), std::get<2>(World::mouseDown));
-	coord up;
-	mouseToScreen(up.first, up.second);
-	topLeft.first = std::min(down.first, up.first);
-	topLeft.second = std::min(down.second, up.second);
-	bottomRight.first = std::max(down.first, up.first);
-	bottomRight.second = std::max(down.second, up.second);
+	Coord down = World::mouseDown;
+	Coord up = mouseToScreen();
+	topLeft.x = std::min(down.x, up.x);
+	topLeft.y = std::min(down.y, up.y);
+	bottomRight.x = std::max(down.x, up.x);
+	bottomRight.y = std::max(down.y, up.y);
 }
 
-std::vector<coord> Camera::mouseoverTiles()
+std::vector<Coord> Camera::mouseoverTiles()
 {
-	coord a, b;
+	Coord a, b;
 	selectionRectangle(a, b);
-	coord first = mouseoverTile(a);
-	coord second = mouseoverTile(b);
-	std::vector<coord> tiles;
-	for (int i = first.second; i <= second.second; i++)
+	Coord first = screenToTile(a);
+	Coord second = screenToTile(b);
+	std::vector<Coord> tiles;
+	for (int i = first.y; i <= second.y; i++)
 	{
-		for (int j = first.first; j <= second.first; j++)
+		for (int j = first.x; j <= second.x; j++)
 			if (!World::TileOutOfBounds(j,i))
-				tiles.push_back(coord(j,i));
+				tiles.push_back(Coord(j,i,true));
 	}
 	std::cout << "selected : " << tiles.size() << "\n";
 
@@ -116,14 +121,14 @@ void Camera::Transform_Camera(float x, float y)
 
 void Camera::drawScreen()
 {
-	if (std::get<0>(World::mouseDown))
+	if (World::mouseDown.tile)
 		drawSelection();
 
 	for each (auto i in screen) {
 		i->Draw();
 	}
 
-	if (std::get<0>(World::mouseEvent))
+	if (World::mouseEvent.tile)
 	{
 		selectTiles();
 	}
@@ -142,9 +147,9 @@ void Camera::checkKeys()
 
 void Camera::drawSelection()
 {
-	coord topLeft, bottomRight;
+	Coord topLeft, bottomRight;
 	Camera::selectionRectangle(topLeft, bottomRight);
-	al_draw_rectangle(topLeft.first, topLeft.second, bottomRight.first, bottomRight.second, al_map_rgb(255, 0, 0), 1);
+	al_draw_rectangle(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, al_map_rgb(255, 0, 0), 1);
 }
 
 void Camera::selectTiles()
@@ -169,5 +174,5 @@ void Camera::selectTiles()
 	for (auto &p : selection)
 		Tile::select(p);
 
-	std::get<0>(World::mouseEvent) = false;
+	World::mouseEvent = Coord();
 }
