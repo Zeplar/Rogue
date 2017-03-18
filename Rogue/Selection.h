@@ -9,6 +9,8 @@ public:
 	Selection();
 	~Selection();
 	Selection(const Selection& other);
+
+	static Selection getScreen();
 	bool overlaps(Selection& other);
 	void Draw();
 

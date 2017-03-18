@@ -22,6 +22,7 @@ public:
 	std::string name;
 
 	static double getDirection(Direction EntityDirection);
+	std::vector<std::string> getNotes();
 	Tile& getTile();
 
 protected:
@@ -32,6 +33,7 @@ protected:
 	void getDirection(int &dx, int &dy);
 	void SetDirection(int &dx, int &dy);
 	std::vector<GUI::Drawable*> drawable_components;
+	std::vector<std::string> notes;
 
 };
 

@@ -174,6 +174,7 @@
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityEditor.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Item.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Coord.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityEditor.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Item.cpp" />

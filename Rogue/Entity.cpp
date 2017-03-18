@@ -6,6 +6,7 @@
 Entity::Entity(std::string name)
 {
 	this->name = name;
+	this->notes = std::vector<std::string>();
 }
 
 
@@ -56,6 +57,11 @@ double Entity::getDirection(Entity::Direction Entity_Direction)
 	default:
 		throw new std::invalid_argument("Unknown direction in Entity::getDirection\n");
 	}
+}
+
+std::vector<std::string> Entity::getNotes()
+{
+	return notes;
 }
 
 //Gets the entity's current direction as an x,y offset

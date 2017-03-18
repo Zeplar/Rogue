@@ -68,10 +68,16 @@ void TileMenu::Draw()
 	int cursorY = note * 20 + posY + 15;
 	al_draw_line(cursorX, cursorY, cursorX, cursorY + 15, al_color_name("white"), 2);
 
+	Selection mouseoverSelection(Camera::mouseoverTile(), Camera::mouseoverTile());
+
+	if (World::key[ALLEGRO_KEY_TAB])
+	{
+		mouseoverSelection = Selection::getScreen();
+	}
 
 	for (auto& s : notes)
 	{
-		if (s.first.overlaps(selection))
+		if (s.first.overlaps(mouseoverSelection))
 			s.first.Draw();
 	}
 	
@@ -112,6 +118,8 @@ std::vector<std::string>& TileMenu::getNotes()
 void TileMenu::Update()
 {
 	Update(Selection(Tile::currentlySelected));
+
+
 
 	if (World::key[ALLEGRO_KEY_ESCAPE])
 	{
@@ -154,6 +162,8 @@ void TileMenu::Update()
 	}
 	else if (World::key[ALLEGRO_KEY_UP])
 		note = std::max(note - 1, 0);
+
+	else if (World::key[ALLEGRO_KEY_TAB]) return;
 
 	else if (World::keyPress != 0)
 	{

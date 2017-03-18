@@ -11,7 +11,7 @@ class Creature : public Entity
 {
 public:
 
-	Tile::Characteristic movementType;	//While all characteristics are valid, you should probably choose a movement characteristic.
+	std::string movementType;	//While all characteristics are valid, you should probably choose a movement characteristic.
 	int hp, mp;
 	float speed;
 	enum Characteristics {Hostile};

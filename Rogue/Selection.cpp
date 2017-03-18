@@ -47,6 +47,13 @@ void Selection::Draw()
 
 }
 
+Selection Selection::getScreen()
+{
+	Coord topLeft = Camera::screenToTile(Coord(0, 0, false));
+	Coord bottomRight = Camera::screenToTile(Coord(al_get_display_width(al_get_current_display()), al_get_display_height(al_get_current_display()), false));
+	return Selection(topLeft, bottomRight);
+}
+
 bool Selection::overlaps(Selection& other)
 {
 	if (!this || !other) return false;

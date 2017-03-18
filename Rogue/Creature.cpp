@@ -69,7 +69,7 @@ void Creature::Move(int dx, int dy)
 	SetDirection(dx, dy);
 	Tile& target = World::getTile(x + dx, y + dy);
 	Tile& original = World::getTile(x, y);
-	if (target.Characteristics()[movementType] && !target.entity)
+	if (target.getCharacteristic(movementType.data()) && !target.entity)
 	{
 		x += dx;
 		y += dy;
@@ -127,7 +127,7 @@ private:
 	}
 
 public:
-	static std::unique_ptr<std::vector<Coord>> FindPathTo(Creature& self, Coord start, Coord end, int radius_to_search, Tile::Characteristic movementType)
+	static std::unique_ptr<std::vector<Coord>> FindPathTo(Creature& self, Coord start, Coord end, int radius_to_search, const char* movementType)
 	{
 		int size = radius_to_search * radius_to_search * 4;
 		int x, y;
@@ -153,7 +153,7 @@ public:
 		std::vector<int> fScore(size, INT32_MAX);
 		fScore[open_set[0]] = distance(end, start);
 
-		if (!World::getTile(end.x, end.y).Characteristics()[movementType]) return 0;
+		if (!World::getTile(end.x, end.y).getCharacteristic(movementType)) return 0;
 
 		while (!open_set.empty())
 		{
@@ -177,7 +177,7 @@ public:
 				x = index_to_coord(neighbor, radius_to_search).x + start.x;
 				y = index_to_coord(neighbor, radius_to_search).y + start.y;
 
-				if (!World::getTile(x, y).Characteristics()[movementType])
+				if (!World::getTile(x, y).getCharacteristic(movementType))
 				{
 					continue;	//Ignore tiles which are impassable
 				}
@@ -209,5 +209,5 @@ public:
 
 std::unique_ptr<std::vector<Coord>> Creature::FindPathTo(int x, int y, int radius_to_search)
 {
-	return A_Star::FindPathTo(*this, Coord(this->x, this->y,true), Coord(x, y,true), radius_to_search, movementType);
+	return A_Star::FindPathTo(*this, Coord(this->x, this->y,true), Coord(x, y,true), radius_to_search, movementType.data());
 }

@@ -15,7 +15,7 @@ const int TIME_TO_MOVE = 20;
 Player::Player() : Creature("Player")
 {
 	speed = 20;
-	movementType = Tile::Characteristic::Flyable;
+	movementType = "Flyable";
 
 	ALLEGRO_BITMAP *raw = al_load_bitmap("C:/Users/Joshua/Documents/Visual Studio 2015/Projects/Rogue/Rogue/Rogue/Tome/Monsters/HumanFighter.PNG");
 	image = al_create_bitmap(Tile::TILE_W, Tile::TILE_H);

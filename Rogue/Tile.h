@@ -14,10 +14,13 @@ public:
 	Tile(const Tile& t);
 	Tile();
 	~Tile();
-	enum Characteristic { Walkable, Flyable, Swimmable, SpawnsEnemies };
+
+	static std::vector<std::string> CharacteristicNames;
 
 	const std::vector<bool>& Characteristics();
 	void SetCharacteristic(int Characteristic, bool setting);
+	void SetCharacteristic(const char * c, bool setting);
+	bool getCharacteristic(const char* c);
 	void Draw();
 
 	static void select(Coord& t);
@@ -40,5 +43,10 @@ public:
 
 protected:
 	std::vector<bool> characteristics;
+
+private:
+	static std::vector<std::string> parseSaveTileCharacteristics();
+	static std::vector<std::string> split(const std::string & str, const std::string & delim);
+	static std::vector<std::string> parseSaveTileMap();
 };
 

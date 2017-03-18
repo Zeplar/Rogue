@@ -46,7 +46,6 @@ void World::loadChunks(json& chunkFile)
 {
 	int x = 0;
 	int y = 0;
-	std::cout << chunkFile << std::endl;
 	for (auto& chunkX : chunkFile)
 	{
 		for (auto& chunkY : chunkX)

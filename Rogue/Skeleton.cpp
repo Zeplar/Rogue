@@ -16,7 +16,7 @@ Skeleton::Skeleton() : Creature("Skeleton")
 	drawable_components.push_back(new GUI::Avatar(image));
 
 	speed = 40;
-	movementType = Tile::Characteristic::Walkable;
+	movementType = "Walkable";
 
 
 	if (!al_reserve_samples(10)) std::cerr << "Failed to reserve audio samples\n";
@@ -49,7 +49,7 @@ void Skeleton::Behavior()
 	moveTimer = 0;
 	
 	if (!target) target = Find_Target_Player(10);
-	if (target && target->getTile().Characteristics()[movementType])
+	if (target && target->getTile().getCharacteristic("Walkable"))
 		target->GetPosition(tile_target.x, tile_target.y);
 
 	if (auto path = FindPathTo(tile_target.x, tile_target.y, 10))

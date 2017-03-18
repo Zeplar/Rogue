@@ -93,7 +93,6 @@ int main()
 	auto primary = Player::make_player(0, 0);
 	int x, y;
 	primary->GetPosition(x, y);
-
 	while (true)
 	{
 		ALLEGRO_EVENT event;

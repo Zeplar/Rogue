@@ -1,0 +1,5 @@
+CHARACTERISTICS = Walkable, Flyable, Swimmable, SpawnsEnemies
+TILES =
+Forest_Floor
+Forest_Tree
+Pool_Blood
