@@ -14,6 +14,7 @@ std::vector<Coord> Tile::currentlySelected;
 std::vector<Tile> Tile::baseTiles;
 Tile* Tile::impassable_tile = nullptr;
 std::vector<std::string> Tile::CharacteristicNames;
+std::vector<std::string> Tile::TileNames;
 
 Tile::Tile(int id) : id(id)
 {
@@ -122,6 +123,8 @@ void Tile::select(Coord& t)
 	}
 }
 
+
+
 void Tile::loadTiles()
 {
 	const char* path = R"(C:\Users\Joshua\Documents\Visual Studio 2015\Projects\Rogue\Rogue\Rogue\tiles)";
@@ -171,6 +174,25 @@ std::vector<std::string> Tile::parseSaveTileCharacteristics()
 	auto section = unparsed.substr(start, end - start);
 
 	auto tokens = split(section, std::string(","));
+	for (auto& str : tokens)
+		str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+	return tokens;
+}
+
+
+std::vector<std::string> Tile::parseSaveTileMap()
+{
+	//all this just to read the file into a string... ew?
+	const char* path = R"(C:\Users\Joshua\Documents\Visual Studio 2015\Projects\Rogue\Rogue\Rogue\tiles\tilemap.txt)";
+	std::ifstream f(path);
+	std::stringstream stream;
+	stream << f.rdbuf();
+	std::string unparsed = stream.str();
+
+	int start = unparsed.find("TILES =") + 7;
+	auto section = unparsed.substr(start);
+
+	auto tokens = split(section, std::string("\n"));
 	for (auto& str : tokens)
 		str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 	return tokens;

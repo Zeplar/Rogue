@@ -16,6 +16,7 @@ public:
 	~Tile();
 
 	static std::vector<std::string> CharacteristicNames;
+	static std::vector<std::string> TileNames;
 
 	const std::vector<bool>& Characteristics();
 	void SetCharacteristic(int Characteristic, bool setting);

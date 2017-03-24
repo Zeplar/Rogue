@@ -37,6 +37,8 @@ char World::getKey()
 json World::serializeTiles()
 {
 	json j;
+	j["Characteristics"] = Tile::CharacteristicNames;
+	j["Names"] = Tile::TileNames;
 	for (auto& chunk : chunks)
 		j[chunk.first.x][chunk.first.y] = chunk.second->serialize();
 	return j;
