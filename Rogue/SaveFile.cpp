@@ -10,7 +10,7 @@
 SaveFile::SaveFile(const std::string& fileName)
 {
 	json save;
-	save["chunks"] = World::serializeTiles();
+	save["Terrain"] = World::serializeTiles();
 	//save["notes"] = Tile::serializeNotes();
 	
 	std::ofstream o(fileName);
@@ -22,7 +22,7 @@ void SaveFile::loadFile(const std::string& fileName)
 {
 	std::ifstream f(fileName);
 	json save(f);
-	World::loadChunks(save["chunks"]);
+	World::loadChunks(save["Terrain"]);
 }
 
 

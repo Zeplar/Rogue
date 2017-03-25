@@ -39,8 +39,10 @@ json World::serializeTiles()
 	json j;
 	j["Characteristics"] = Tile::CharacteristicNames;
 	j["Names"] = Tile::TileNames;
+	json chnks;
 	for (auto& chunk : chunks)
-		j[chunk.first.x][chunk.first.y] = chunk.second->serialize();
+		chnks[chunk.first.x][chunk.first.y] = chunk.second->serialize();
+	j["Chunks"] = chnks;
 	return j;
 }
 
@@ -48,7 +50,7 @@ void World::loadChunks(json& chunkFile)
 {
 	int x = 0;
 	int y = 0;
-	for (auto& chunkX : chunkFile)
+	for (auto& chunkX : chunkFile["Chunks"])
 	{
 		for (auto& chunkY : chunkX)
 		{
