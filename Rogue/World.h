@@ -44,6 +44,9 @@ public:
 
 	static void setTile(const Coord & c, Tile * t);
 
+	//Returns the chunk containing the given tile coordinate.
+	static Chunk& getChunk(const Coord & c);
+
 	static std::unique_ptr<std::map<Coord,Chunk*>> GetChunksAround(int x, int y);
 
 	static void Draw(int x, int y);
@@ -55,8 +58,6 @@ public:
 	static Tile& getTile(int x, int y);
 
 	static Tile& getTile(const Coord & c);
-
-	static Chunk& getChunk(int x, int y);
 
 	static void Update();
 
@@ -71,17 +72,17 @@ public:
 	static void RegisterPlayer(Entity * p);
 
 	static void UnregisterPlayer(Entity *p);
+	static int RenderDistance;
+
 
 private:
 
-
+	static Chunk& getChunk(int x, int y);
 	static std::map<Coord, Chunk*> chunks;
 	static ALLEGRO_BITMAP *display;
 	static ALLEGRO_TRANSFORM transforms[16];
 	static int transform_index;
 	static std::vector<Entity*> players;
-
-
 
 };
 

@@ -69,6 +69,7 @@ void Player::SetDirection(const std::vector<bool>& key)
 
 void Player::Move(const std::vector<bool>& key)
 {
+	speed = 30 / World::RenderDistance;
 	int dx = key[ALLEGRO_KEY_RIGHT] - key[ALLEGRO_KEY_LEFT];
 	int dy = key[ALLEGRO_KEY_DOWN] - key[ALLEGRO_KEY_UP];
 

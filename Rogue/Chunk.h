@@ -7,6 +7,8 @@ class Chunk
 {
 public:
 	~Chunk();
+	//Clears the image cache so the chunk is forced to redraw itself
+	void Redraw();
 	void Draw();
 	static const int size = 16;
 	std::vector<Tile *>data;
@@ -24,6 +26,10 @@ private:
 	static std::vector<int>* chunk_generate_growth_sample(int initial_seeds, int size);	//
 
 	static std::vector<int>* chunk_generate_cell_sample(int minimum, int optimal, int maximum, int rounds);
+
+	static ALLEGRO_BITMAP *chunk_buffer;
+
+	ALLEGRO_BITMAP *chunk_image;
 
 	friend class World;
 };

@@ -2,6 +2,8 @@
 #include "Chunk.h"
 #include "World.h"
 
+ALLEGRO_BITMAP *Chunk::chunk_buffer;
+
 json Chunk::serialize()
 {
 	std::vector<int> tiles;
@@ -34,16 +36,36 @@ Chunk::~Chunk()
 	}
 }
 
+void Chunk::Redraw()
+{
+	if (chunk_image)
+		al_destroy_bitmap(chunk_image);
+	chunk_image = nullptr;
+}
+
 void Chunk::Draw()
 {
+	if (chunk_image)
+	{
+		al_draw_bitmap(chunk_image, 0, 0, 0);
+		return;
+	}
+	std::cout << "Drawing a chunk\n";
 	ALLEGRO_TRANSFORM temp;
+	auto prev = al_get_current_transform();
+	auto prev_bmp = al_get_target_bitmap();
+	chunk_image = al_create_bitmap(size * Tile::TILE_W, size * Tile::TILE_H);
+	al_set_target_bitmap(chunk_image);
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
 			al_build_transform(&temp, i*Tile::TILE_W, j*Tile::TILE_H, 1, 1, 0);
-			World::Push_Matrix(&temp);
+			al_use_transform(&temp);
 			data[i*size+j]->Draw();
-			World::Pop_Matrix();
 		}
+	al_draw_bitmap(chunk_image, 0, 0, 0);
+	al_set_target_bitmap(prev_bmp);
+	al_use_transform(prev);
+	al_draw_bitmap(chunk_image, 0, 0, 0);
 }
 
 Chunk::Chunk(std::vector<int>* sample)
@@ -142,6 +164,7 @@ Chunk* Chunk::Impassable_Chunk()
 		_impassable = new Chunk();
 		for (int i = 0; i < Chunk::size*Chunk::size; i++)
 				_impassable->data[i] = Tile::impassable_tile;
+		chunk_buffer = al_create_bitmap(Tile::TILE_W * size, Tile::TILE_H * size);
 	}
 
 	return _impassable;

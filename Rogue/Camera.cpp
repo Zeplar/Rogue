@@ -107,11 +107,11 @@ void Camera::Transform_Camera(float x, float y)
 {
 	float w = al_get_display_width(al_get_current_display());		//Screen width
 	float h = al_get_display_height(al_get_current_display());		//Screen height
-
+	const float speed = 0.005 * World::RenderDistance;
 
 	al_transform_coordinates(al_get_current_transform(), &x, &y);
-	if (x < .33*w || x > .66*w) al_translate_transform(&camera_transform, (.5*w - x) * 0.01, 0);
-	if (y < .33*h || y > .66*h) al_translate_transform(&camera_transform, 0, (.5*h - y)*0.01);
+	if (x < .33*w || x > .66*w) al_translate_transform(&camera_transform, (.5*w - x) * speed, 0);
+	if (y < .33*h || y > .66*h) al_translate_transform(&camera_transform, 0, (.5*h - y) * speed);
 
 	if (x < 0 || x > w || y < 0 || y > w) al_translate_transform(&camera_transform, (.5*w - x), (.5*h - y));
 
@@ -143,6 +143,17 @@ void Camera::checkKeys()
 		for (auto &p : Tile::currentlySelected) World::getTile(p).selected = false;
 		Tile::currentlySelected.clear();
 	}
+	if (World::key[ALLEGRO_KEY_PAD_PLUS])
+	{
+		World::RenderDistance += 1;
+		World::key[ALLEGRO_KEY_PAD_PLUS] = false;
+	}
+	else if (World::key[ALLEGRO_KEY_PAD_MINUS])
+	{
+		World::RenderDistance -= 1;
+		if (World::RenderDistance < 1) World::RenderDistance = 1;
+		World::key[ALLEGRO_KEY_PAD_MINUS] = false;
+	}
 }
 
 void Camera::drawSelection()
@@ -167,12 +178,14 @@ void Camera::selectTiles()
 	for (auto &tile : Tile::currentlySelected)
 	{
 		World::getTile(tile).selected = false;
+		World::getChunk(tile).Redraw();
 	}
 	Tile::currentlySelected.clear();
 
 	//Select the selection
-	for (auto &p : selection)
+	for (auto &p : selection) {
 		Tile::select(p);
-
+		World::getChunk(p).Redraw();
+	}
 	World::mouseEvent = Coord();
 }

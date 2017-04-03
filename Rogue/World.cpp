@@ -6,7 +6,7 @@ using namespace std;
 
 ALLEGRO_BITMAP *World::display = NULL;
 std::map<Coord, Chunk*> World::chunks;
-const int RenderDistance = 2;
+int World::RenderDistance = 2;
 ALLEGRO_TRANSFORM World::transforms[16];
 int World::transform_index = 0;
 std::vector<Entity*> World::players;
@@ -119,6 +119,13 @@ void World::setTile(const Coord& c, Tile* t)
 	auto& tile = chunk->data[(c.x % Chunk::size)*Chunk::size + (c.y % Chunk::size)];
 	t->entity.swap(tile->entity);
 	tile = t;
+	chunk->Redraw();
+}
+
+Chunk& World::getChunk(const Coord& c)
+{
+	if (TileOutOfBounds(c.x, c.y)) return *Chunk::Impassable_Chunk();
+	else return *chunks[Coord(c.x / Chunk::size, c.y / Chunk::size, true)];
 }
 
 //Returns the tile at the given coordinate
@@ -208,6 +215,7 @@ std::unique_ptr<std::map<Coord, Chunk*>> World::GetChunksAround(int x, int y)
 //Draw the chunks in the render distance around the player
 void World::Draw(int x, int y)
 {
+	float zoom = 2.0f / RenderDistance;
 	int counts = 0;
 	auto chunks = GetChunksAround(x, y);
 	al_set_target_bitmap(display);
@@ -216,7 +224,7 @@ void World::Draw(int x, int y)
 	int ex, ey;
 	for each (auto& c in *chunks)
 	{
-		al_build_transform(&temp, c.first.x * Chunk::size * Tile::TILE_W, c.first.y * Chunk::size * Tile::TILE_H, 1, 1, 0);
+		al_build_transform(&temp, c.first.x * Chunk::size * Tile::TILE_W * zoom, c.first.y * Chunk::size * Tile::TILE_H * zoom, zoom, zoom, 0);
 		Push_Matrix(&temp);
 		c.second->Draw();
 		Pop_Matrix();
@@ -229,7 +237,7 @@ void World::Draw(int x, int y)
 			if (t->entity)
 			{
 				t->entity->GetPosition(ex, ey);
-				al_build_transform(&temp, ex * Tile::TILE_W, ey * Tile::TILE_H, 1, 1, 0);
+				al_build_transform(&temp, ex * Tile::TILE_W * zoom, ey * Tile::TILE_H * zoom, zoom, zoom, 0);
 				Push_Matrix(&temp);
 				t->entity->Draw();
 				Pop_Matrix();
